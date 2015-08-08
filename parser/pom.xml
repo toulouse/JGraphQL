@@ -9,10 +9,10 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>processor</artifactId>
+	<artifactId>parser</artifactId>
 	<packaging>jar</packaging>
 
-	<name>processor</name>
+	<name>parser</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -28,14 +28,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<proc>none</proc>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>

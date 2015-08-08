@@ -12,7 +12,7 @@
 	<artifactId>example</artifactId>
 	<packaging>jar</packaging>
 
-	<name>processor</name>
+	<name>example</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>

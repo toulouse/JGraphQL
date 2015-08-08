@@ -18,7 +18,7 @@
 
 	<modules>
 		<module>../example</module>
-		<module>../processor</module>
+		<module>../parser</module>
 		<module>../annotations</module>
 	</modules>
 	<dependencies>
