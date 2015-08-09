@@ -7,8 +7,8 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.Trees;
 
-import se.atoulou.parser.GraphQLSchemaLexer;
-import se.atoulou.parser.GraphQLSchemaParser;
+import se.atoulou.parser.antlr.GraphQLSchemaLexer;
+import se.atoulou.parser.antlr.GraphQLSchemaParser;
 
 public class Test {
 
