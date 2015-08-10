@@ -140,3 +140,5 @@ fragment INT :   '0' | [1-9] [0-9]* ; // no leading zeros
 fragment EXP :   [Ee] [+\-]? INT ; // \- since - means "range" inside [...]
 WS  :   [ \t\n\r]+ -> skip ;    
 COMMA   :   ',' -> skip	;
+COMMENTCHAR :   ~('\n' | '\r' | '\u2028' | '\u2029') ;
+COMMENT :   '#' COMMENTCHAR* -> skip ;
