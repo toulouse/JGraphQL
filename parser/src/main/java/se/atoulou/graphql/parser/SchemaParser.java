@@ -1,4 +1,4 @@
-package se.atoulou.parser;
+package se.atoulou.graphql.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,8 +9,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.atoulou.parser.antlr.GraphQLSchemaLexer;
-import se.atoulou.parser.antlr.GraphQLSchemaParser;
+import se.atoulou.graphql.parser.antlr.GraphQLSchemaLexer;
+import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser;
 
 public class SchemaParser {
 

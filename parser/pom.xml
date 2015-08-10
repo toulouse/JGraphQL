@@ -44,9 +44,12 @@
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr4-maven-plugin</artifactId>
 				<version>4.5.1</version>
+				<configuration>
+					<libDirectory>${basedir}/src/main/antlr4/se/atoulou/graphql/parser/antlr</libDirectory>
+				</configuration>
 				<executions>
 					<execution>
-						<id>antlr</id>
+						<id>antlr4</id>
 						<goals>
 							<goal>antlr4</goal>
 						</goals>

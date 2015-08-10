@@ -30,6 +30,8 @@ GraphQL grammar derived from:
 */
 grammar GraphQLSchema;
 
+import GraphQL;
+
 schemaDocument
     : schemaDefinition+
     ;
@@ -43,41 +45,41 @@ schemaDefinition
     | inputObjectDefinition
     ;
 
+NAME
+    : [_a-zA-Z] [_a-zA-Z0-9]*
+    ;
+
 typeDefinition
-    :   'type' NAME implementTypes? '{' fieldDefinition+ '}'
+    :   'type' NAME implementTypes? BRACE_L fieldDefinition+ BRACE_R
     ;
 
 implementTypes
-    :   ':' typeName+
+    :   COLON typeName+
     ;
 
 fieldDefinition
-    :   NAME argumentsDefinition? ':' type 
+    :   (NAME | 'type') argumentsDefinition? COLON type 
     ;
 
 argumentsDefinition
-    :   '(' inputValueDefinition+ ')'
+    :   PAREN_L inputValueDefinition+ PAREN_R
     ;
 
 inputValueDefinition
-    :   NAME ':' type defaultValue?
-    ;
-
-defaultValue
-    :   '=' value
+    :   NAME COLON type (EQUAL value)?
     ;
 
 interfaceDefinition
-    :   'interface' NAME  '{' fieldDefinition+ '}'
+    :   'interface' NAME  BRACE_L fieldDefinition+ BRACE_R
     ;
 
 unionDefinition
-    :   'union' NAME '=' unionMembers
+    :   'union' NAME EQUAL unionMembers
     ;
 
 unionMembers
     :   typeName
-    |   unionMembers '|' typeName
+    |   unionMembers PIPE typeName
     ;
 
 scalarDefinition
@@ -85,7 +87,7 @@ scalarDefinition
     ;
 
 enumDefinition
-    :   'enum' NAME '{' enumValueDefinition+ '}'
+    :   'enum' NAME BRACE_L enumValueDefinition+ BRACE_R
     ;
 
 enumValueDefinition
@@ -93,13 +95,14 @@ enumValueDefinition
     ;
 
 inputObjectDefinition
-    :   'input' NAME '{' inputValueDefinition+ '}'
+    :   'input' NAME BRACE_L inputValueDefinition+ BRACE_R
     ;
 
 value
-    :   STRING # stringValue
-    |   NUMBER # numberValue
-    |   BOOLEAN # booleanValue
+    :   STRING_VALUE # stringValue
+    |   INT_VALUE # intValue
+    |   FLOAT_VALUE # floatValue
+    |   BOOLEAN_VALUE # boolValue
     |   array # arrayValue
     ;
 
@@ -113,32 +116,14 @@ typeName
     ;
 
 listType
-    :   '[' type ']'
+    :   BRACKET_L type BRACKET_R
     ;
 
 nonNullType
-    : '!'
+    : BANG
     ;
 
 array
-    :   '[' value (',' value)* ']'
-    |   '[' ']' // empty array
+    :   BRACKET_L value (COMMA value)* BRACKET_R
+    |   BRACKET_L BRACKET_R // empty array
     ;
-
-NAME : [_A-Za-z][_0-9A-Za-z]* ;
-STRING :  '"' (ESC | ~["\\])* '"' ;
-BOOLEAN : 'true' | 'false' ;
-fragment ESC :   '\\' (["\\/bfnrt] | UNICODE) ;
-fragment UNICODE : 'u' HEX HEX HEX HEX ;
-fragment HEX : [0-9a-fA-F] ;
-NUMBER
-    :   '-'? INT '.' [0-9]+ EXP? // 1.35, 1.35E-9, 0.3, -4.5
-    |   '-'? INT EXP             // 1e10 -3e4
-    |   '-'? INT                 // -3, 45
-    ;
-fragment INT :   '0' | [1-9] [0-9]* ; // no leading zeros
-fragment EXP :   [Ee] [+\-]? INT ; // \- since - means "range" inside [...]
-WS  :   [ \t\n\r]+ -> skip ;    
-COMMA   :   ',' -> skip	;
-COMMENTCHAR :   ~('\n' | '\r' | '\u2028' | '\u2029') ;
-COMMENT :   '#' COMMENTCHAR* -> skip ;
