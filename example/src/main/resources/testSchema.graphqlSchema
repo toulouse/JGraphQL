@@ -1,0 +1,14 @@
+interface Foo {
+	name: String
+}
+
+interface Bar {
+	name: String
+	description: String
+}
+
+type Baz : Foo, Bar {
+	name: String
+	description: String
+	type: String
+}

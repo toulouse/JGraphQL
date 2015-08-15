@@ -161,7 +161,7 @@ public class Type {
         private List<Type.Builder>       interfaces;
         private List<Type.Builder>       possibleTypes;
         private List<EnumValue.Builder>  enumValues;
-        private Type                     ofType;
+        private Type.Builder             ofType;
         private List<InputValue.Builder> inputFields;
 
         protected Builder() {
@@ -195,9 +195,11 @@ public class Type {
                 return new InputObjectType(kind, name, description, inputFields);
             }
             case LIST: {
+                Type ofType = this.ofType.build();
                 return new ListType(kind, name, description, ofType);
             }
             case NON_NULL: {
+                Type ofType = this.ofType.build();
                 return new NonNullType(kind, name, description, ofType);
             }
             default:
@@ -206,9 +208,17 @@ public class Type {
             }
         }
 
-        public Builder setKind(TypeKind kind) {
+        public TypeKind kind() {
+            return kind;
+        }
+
+        public Builder kind(TypeKind kind) {
             this.kind = kind;
             return this;
+        }
+
+        public String name() {
+            return name;
         }
 
         public Builder name(String name) {
@@ -216,9 +226,17 @@ public class Type {
             return this;
         }
 
+        public String description() {
+            return description;
+        }
+
         public Builder description(String description) {
             this.description = description;
             return this;
+        }
+
+        public List<Field.Builder> fields() {
+            return fields;
         }
 
         public Builder fields(List<Field.Builder> fields) {
@@ -226,9 +244,17 @@ public class Type {
             return this;
         }
 
+        public List<Type.Builder> interfaces() {
+            return interfaces;
+        }
+
         public Builder interfaces(List<Type.Builder> interfaces) {
             this.interfaces = interfaces;
             return this;
+        }
+
+        public List<Type.Builder> possibleTypes() {
+            return possibleTypes;
         }
 
         public Builder possibleTypes(List<Type.Builder> possibleTypes) {
@@ -236,8 +262,21 @@ public class Type {
             return this;
         }
 
+        public List<EnumValue.Builder> enumValues() {
+            return enumValues;
+        }
+
         public Builder enumValues(List<EnumValue.Builder> enumValues) {
             this.enumValues = enumValues;
+            return this;
+        }
+
+        public Type.Builder ofType() {
+            return ofType;
+        }
+
+        public Builder ofType(Type.Builder ofType) {
+            this.ofType = ofType;
             return this;
         }
     }

@@ -1,8 +1,7 @@
 package se.atoulou.graphql.schema;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import se.atoulou.graphql.common.NotNull;
 
@@ -16,7 +15,7 @@ public class Schema {
         return new Builder();
     }
 
-    private Schema(@NotNull List<@NotNull Type> types, @NotNull Type queryType, Type mutationType, @NotNull List<@NotNull Directive> directives) {
+    protected Schema(@NotNull List<@NotNull Type> types, @NotNull Type queryType, Type mutationType, @NotNull List<@NotNull Directive> directives) {
         super();
         this.types = types;
         this.queryType = queryType;
@@ -41,47 +40,53 @@ public class Schema {
     }
 
     public static class Builder {
-        private @NotNull List<@NotNull Type>      types;
-        private @NotNull Type                     queryType;
-        private Type                              mutationType;
-        private @NotNull List<@NotNull Directive> directives;
+        private List<Type.Builder>      types;
+        private Type                    queryType;
+        private Type                    mutationType;
+        private List<Directive.Builder> directives;
 
-        private Builder() {
-            types = new ArrayList<>();
-            directives = new ArrayList<>();
+        protected Builder() {
         }
 
         public Schema build() {
+            List<Type> types = this.types.stream().map(builder -> builder.build()).collect(Collectors.toList());
+            List<Directive> directives = this.directives.stream().map(builder -> builder.build()).collect(Collectors.toList());
             return new Schema(types, queryType, mutationType, directives);
         }
 
-        public Builder addType(Type type) {
-            this.types.add(type);
+        public List<Type.Builder> types() {
+            return types;
+        }
+
+        public Builder types(List<Type.Builder> types) {
+            this.types = types;
             return this;
         }
 
-        public Builder addTypes(Collection<Type> types) {
-            this.types.addAll(types);
-            return this;
+        public Type queryType() {
+            return queryType;
         }
 
-        public Builder setQueryType(Type queryType) {
+        public Builder queryType(Type queryType) {
             this.queryType = queryType;
             return this;
         }
 
-        public Builder setMutationType(Type mutationType) {
+        public Type mutationType() {
+            return mutationType;
+        }
+
+        public Builder mutationType(Type mutationType) {
             this.mutationType = mutationType;
             return this;
         }
 
-        public Builder addDirective(Directive directive) {
-            this.directives.add(directive);
-            return this;
+        public List<Directive.Builder> directives() {
+            return directives;
         }
 
-        public Builder addDirectives(Collection<Directive> directives) {
-            this.directives.addAll(directives);
+        public Builder directives(List<Directive.Builder> directives) {
+            this.directives = directives;
             return this;
         }
     }

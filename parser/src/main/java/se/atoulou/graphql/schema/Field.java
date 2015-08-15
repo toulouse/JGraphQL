@@ -1,6 +1,7 @@
 package se.atoulou.graphql.schema;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import se.atoulou.graphql.common.NotNull;
 
@@ -52,17 +53,19 @@ public class Field {
     }
 
     public static class Builder {
-        private String           name;
-        private String           description;
-        private List<InputValue> args;
-        private Type             type;
-        private Boolean          isDeprecated;
-        private String           deprecationReason;
+        private String                   name;
+        private String                   description;
+        private List<InputValue.Builder> args;
+        private Type.Builder             type;
+        private Boolean                  isDeprecated;
+        private String                   deprecationReason;
 
         protected Builder() {
         }
 
         public Field build() {
+            List<InputValue> args = this.args.stream().map(builder -> builder.build()).collect(Collectors.toList());
+            Type type = this.type.build();
             return new Field(name, description, args, type, isDeprecated, deprecationReason);
         }
 
@@ -76,12 +79,12 @@ public class Field {
             return this;
         }
 
-        public Builder args(List<InputValue> args) {
+        public Builder args(List<InputValue.Builder> args) {
             this.args = args;
             return this;
         }
 
-        public Builder type(Type type) {
+        public Builder type(Type.Builder type) {
             this.type = type;
             return this;
         }

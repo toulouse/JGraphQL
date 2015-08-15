@@ -46,6 +46,7 @@
 				<version>4.5.1</version>
 				<configuration>
 					<libDirectory>${basedir}/src/main/antlr4/se/atoulou/graphql/parser/antlr</libDirectory>
+					<visitor>true</visitor>
 				</configuration>
 				<executions>
 					<execution>
