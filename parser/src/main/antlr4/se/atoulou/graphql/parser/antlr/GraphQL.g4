@@ -57,3 +57,8 @@ STRING_CHARACTER
 fragment HEX : [a-fA-F0-9];
 fragment ESCAPED_UNICODE : 'u' HEX HEX HEX HEX;
 fragment ESCAPED_CHARACTER : ["\\/bfnrt];
+
+NAME
+    : [_a-zA-Z] [_a-zA-Z0-9]*
+    ;
+    

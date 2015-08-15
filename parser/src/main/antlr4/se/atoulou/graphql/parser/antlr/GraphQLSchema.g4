@@ -45,10 +45,6 @@ schemaDefinition
     | inputObjectDefinition
     ;
 
-NAME
-    : [_a-zA-Z] [_a-zA-Z0-9]*
-    ;
-
 typeDefinition
     :   'type' NAME implementTypes? BRACE_L fieldDefinition+ BRACE_R
     ;
