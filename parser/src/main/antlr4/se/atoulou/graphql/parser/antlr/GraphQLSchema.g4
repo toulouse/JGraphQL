@@ -95,11 +95,11 @@ inputObjectDefinition
     ;
 
 value
-    :   stringValue
-    |   intValue
-    |   floatValue
-    |   boolValue
-    |   arrayValue
+    :   STRING_VALUE # stringValue
+    |   INTEGER_VALUE # intValue
+    |   FLOAT_VALUE # floatValue
+    |   BOOLEAN_VALUE # boolValue
+    |   array # arrayValue
     ;
 
 type
@@ -119,21 +119,9 @@ nonNullType
     : BANG
     ;
 
-arrayValue
+array
     :   BRACKET_L value (COMMA value)* BRACKET_R
     |   BRACKET_L BRACKET_R // empty array
     ;
-    
-boolValue: ('true' | 'false');
 
-intValue : INTEGER_PART;
 
-floatValue
-    : INTEGER_PART FRACTIONAL_PART
-    | INTEGER_PART EXPONENT_PART
-    | INTEGER_PART FRACTIONAL_PART EXPONENT_PART;
-
-stringValue
-    : '""'
-    | '"' STRING_CHARACTER+ '"';
-    
