@@ -13,3 +13,7 @@ type Baz : Foo, Bar {
 	type: String
 	whatever(parameter : String = "somestuff", parameter2 : Boolean = false): String
 }
+
+scalar SomeScalar
+
+union FooOrBazOrSomeScalar = Foo | Baz | SomeScalar

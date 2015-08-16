@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.tree.RuleNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +15,15 @@ import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InputValueDefinition
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InterfaceDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ListTypeContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.NonNullTypeContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ScalarDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.SchemaDocumentContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeNameContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.UnionDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.UnionMembersContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ValueContext;
 import se.atoulou.jgraphql.schema.Field;
-import se.atoulou.jgraphql.schema.Field.Builder;
 import se.atoulou.jgraphql.schema.InputValue;
 import se.atoulou.jgraphql.schema.Schema;
 import se.atoulou.jgraphql.schema.Type;
@@ -107,6 +108,53 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
 
         this.previousObject = this.objectStack.pop();
         LOG.trace("</Interface>");
+        return null;
+    }
+
+    @Override
+    public Void visitUnionDefinition(UnionDefinitionContext ctx) {
+        String name = ctx.NAME().getText();
+        LOG.trace("<Union name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        Type.Builder typeB = Type.builder();
+        this.objectStack.push(typeB);
+        this.schemaBuilder.types().add(typeB);
+
+        typeB.kind(TypeKind.UNION);
+        typeB.name(name);
+
+        UnionMembersContext unionMembers = ctx.unionMembers();
+        while (unionMembers != null) {
+            String typeName = unionMembers.typeName().getText();
+            LOG.trace("<Type name=\"{}\"/>", typeName);
+
+            Type.Builder possibleTypeB = Type.builder();
+            possibleTypeB.name(typeName);
+            typeB.possibleTypes().add(possibleTypeB);
+            unionMembers = unionMembers.unionMembers();
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Union>");
+        return null;
+    }
+
+    @Override
+    public Void visitScalarDefinition(ScalarDefinitionContext ctx) {
+        String name = ctx.typeName().NAME().getText();
+        LOG.trace("<Scalar name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        Type.Builder typeB = Type.builder();
+        this.objectStack.push(typeB);
+        this.schemaBuilder.types().add(typeB);
+
+        typeB.kind(TypeKind.SCALAR);
+        typeB.name(name);
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Scalar>");
         return null;
     }
 

@@ -75,7 +75,7 @@ unionDefinition
 
 unionMembers
     :   typeName
-    |   unionMembers PIPE typeName
+    |   typeName PIPE unionMembers
     ;
 
 scalarDefinition
