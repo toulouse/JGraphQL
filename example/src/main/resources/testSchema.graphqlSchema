@@ -12,8 +12,15 @@ type Baz : Foo, Bar {
 	description: String!
 	type: String
 	whatever(parameter : String = "somestuff", parameter2 : Boolean = false): String
+	floatTest(aFloat : Float = 9.0e34): String
 }
 
 scalar SomeScalar
 
 union FooOrBazOrSomeScalar = Foo | Baz | SomeScalar
+
+enum SomeEnum {
+	A1, B2, C3
+	D4, E5,
+	F6
+}

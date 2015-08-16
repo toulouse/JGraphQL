@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaBaseVisitor;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ArgumentsDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.EnumDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.EnumValueDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.FieldDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InputValueDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InterfaceDefinitionContext;
@@ -23,6 +25,7 @@ import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeNameContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.UnionDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.UnionMembersContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ValueContext;
+import se.atoulou.jgraphql.schema.EnumValue;
 import se.atoulou.jgraphql.schema.Field;
 import se.atoulou.jgraphql.schema.InputValue;
 import se.atoulou.jgraphql.schema.Schema;
@@ -155,6 +158,34 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
 
         this.previousObject = this.objectStack.pop();
         LOG.trace("</Scalar>");
+        return null;
+    }
+
+    @Override
+    public Void visitEnumDefinition(EnumDefinitionContext ctx) {
+        String name = ctx.NAME().getText();
+        LOG.trace("<Enum name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        Type.Builder typeB = Type.builder();
+        this.objectStack.push(typeB);
+        this.schemaBuilder.types().add(typeB);
+
+        typeB.kind(TypeKind.ENUM);
+        typeB.name(name);
+
+        List<EnumValueDefinitionContext> enumValueDefinitions = ctx.enumValueDefinition();
+        for (EnumValueDefinitionContext enumValueDefinition : enumValueDefinitions) {
+            String enumName = enumValueDefinition.NAME().getText();
+            LOG.trace("<EnumValue name=\"{}\"/>", enumName);
+
+            EnumValue.Builder enumValueB = EnumValue.builder();
+            enumValueB.name(enumName);
+            typeB.enumValues().add(enumValueB);
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Enum>");
         return null;
     }
 
