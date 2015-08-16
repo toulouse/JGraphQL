@@ -69,4 +69,9 @@ public class InputValue {
             return this;
         }
     }
+
+    @Override
+    public String toString() {
+        return "InputValue [defaultValue=" + defaultValue + ", description=" + description + ", name=" + name + ", type=" + type + "]";
+    }
 }

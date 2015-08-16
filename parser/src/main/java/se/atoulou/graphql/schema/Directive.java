@@ -96,4 +96,10 @@ public class Directive {
             return this;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Directive [args=" + args + ", description=" + description + ", name=" + name + ", onField=" + onField + ", onFragment=" + onFragment
+                + ", onOperation=" + onOperation + "]";
+    }
 }

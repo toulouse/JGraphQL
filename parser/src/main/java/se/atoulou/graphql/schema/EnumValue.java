@@ -69,4 +69,9 @@ public class EnumValue {
             return this;
         }
     }
+
+    @Override
+    public String toString() {
+        return "EnumValue [deprecationReason=" + deprecationReason + ", description=" + description + ", isDeprecated=" + isDeprecated + ", name=" + name + "]";
+    }
 }

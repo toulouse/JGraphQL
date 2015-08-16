@@ -90,4 +90,9 @@ public class Schema {
             return this;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Schema [directives=" + directives + ", mutationType=" + mutationType + ", queryType=" + queryType + ", types=" + types + "]";
+    }
 }

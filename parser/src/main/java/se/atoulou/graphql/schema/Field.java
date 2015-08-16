@@ -99,4 +99,10 @@ public class Field {
             return this;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Field [args=" + args + ", deprecationReason=" + deprecationReason + ", description=" + description + ", isDeprecated=" + isDeprecated
+                + ", name=" + name + ", type=" + type + "]";
+    }
 }

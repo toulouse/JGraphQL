@@ -55,6 +55,12 @@ public class Type {
         public List<@NotNull EnumValue> getEnumValues() {
             return enumValues;
         }
+
+        @Override
+        public String toString() {
+            return "EnumType [enumValues=" + enumValues + ", getDescription()=" + getDescription() + ", getKind()=" + getKind() + ", getName()=" + getName()
+                    + "]";
+        }
     }
 
     public static class InterfaceType extends Type {
@@ -74,6 +80,12 @@ public class Type {
         public List<@NotNull Type> getPossibleTypes() {
             return possibleTypes;
         }
+
+        @Override
+        public String toString() {
+            return "InterfaceType [fields=" + fields + ", possibleTypes=" + possibleTypes + ", getDescription()=" + getDescription() + ", getKind()="
+                    + getKind() + ", getName()=" + getName() + "]";
+        }
     }
 
     public static class InputObjectType extends Type {
@@ -86,6 +98,12 @@ public class Type {
 
         public List<@NotNull InputValue> getInputFields() {
             return inputFields;
+        }
+
+        @Override
+        public String toString() {
+            return "InputObjectType [inputFields=" + inputFields + ", getDescription()=" + getDescription() + ", getKind()=" + getKind() + ", getName()="
+                    + getName() + "]";
         }
     }
 
@@ -100,6 +118,11 @@ public class Type {
         public Type getOfType() {
             return ofType;
         }
+
+        @Override
+        public String toString() {
+            return "ListType [ofType=" + ofType + ", getDescription()=" + getDescription() + ", getKind()=" + getKind() + ", getName()=" + getName() + "]";
+        }
     }
 
     public static class NonNullType extends Type {
@@ -112,6 +135,11 @@ public class Type {
 
         public Type getOfType() {
             return ofType;
+        }
+
+        @Override
+        public String toString() {
+            return "NonNullType [ofType=" + ofType + ", getDescription()=" + getDescription() + ", getKind()=" + getKind() + ", getName()=" + getName() + "]";
         }
     }
 
@@ -132,11 +160,22 @@ public class Type {
         public List<@NotNull Type> getInterfaces() {
             return interfaces;
         }
+
+        @Override
+        public String toString() {
+            return "ObjectType [fields=" + fields + ", interfaces=" + interfaces + ", getDescription()=" + getDescription() + ", getKind()=" + getKind()
+                    + ", getName()=" + getName() + "]";
+        }
     }
 
     public static class ScalarType extends Type {
         public ScalarType(TypeKind kind, String name, String description) {
             super(kind, name, description);
+        }
+
+        @Override
+        public String toString() {
+            return "ScalarType [getDescription()=" + getDescription() + ", getKind()=" + getKind() + ", getName()=" + getName() + "]";
         }
     }
 
@@ -150,6 +189,12 @@ public class Type {
 
         public List<@NotNull Type> getPossibleTypes() {
             return possibleTypes;
+        }
+
+        @Override
+        public String toString() {
+            return "UnionType [possibleTypes=" + possibleTypes + ", getDescription()=" + getDescription() + ", getKind()=" + getKind() + ", getName()="
+                    + getName() + "]";
         }
     }
 
@@ -279,5 +324,10 @@ public class Type {
             this.ofType = ofType;
             return this;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Type [description=" + description + ", kind=" + kind + ", name=" + name + "]";
     }
 }
