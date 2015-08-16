@@ -1,9 +1,9 @@
-package se.atoulou.graphql.schema;
+package se.atoulou.jgraphql.schema;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import se.atoulou.graphql.annotations.NotNull;
+import se.atoulou.jgraphql.annotations.NotNull;
 
 public class Directive {
     private final @NotNull String                    name;

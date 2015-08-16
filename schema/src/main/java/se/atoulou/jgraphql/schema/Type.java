@@ -1,10 +1,10 @@
-package se.atoulou.graphql.schema;
+package se.atoulou.jgraphql.schema;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.graphql.annotations.NotNull;
+import se.atoulou.jgraphql.annotations.NotNull;
 
 public class Type {
     public static enum TypeKind {

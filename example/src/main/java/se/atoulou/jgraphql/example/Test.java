@@ -1,4 +1,4 @@
-package se.atoulou.graphql.example;
+package se.atoulou.jgraphql.example;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,9 +9,9 @@ import org.antlr.v4.runtime.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.atoulou.graphql.parser.SchemaParser;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaLexer;
-import se.atoulou.graphql.schema.Schema;
+import se.atoulou.jgraphql.parser.SchemaParser;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaLexer;
+import se.atoulou.jgraphql.schema.Schema;
 
 public class Test {
 

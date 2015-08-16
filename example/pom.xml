@@ -2,18 +2,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
-		<groupId>se.atoulou.graphql</groupId>
-		<artifactId>graphql</artifactId>
+		<groupId>se.atoulou.jgraphql</groupId>
+		<artifactId>jgraphql</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../graphql/pom.xml</relativePath>
+		<relativePath>../jgraphql/pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>example</artifactId>
 	<packaging>jar</packaging>
 
-	<name>example</name>
-	<url>http://maven.apache.org</url>
+	<name>Example</name>
+	<url>http://www.atoulou.se</url>
+	<scm>
+		<url>https://github.com/JGraphQL/JGraphQL/example</url>
+		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git/example</connection>
+		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git/example</developerConnection>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/JGraphQL/JGraphQL/issues</url>
+	</issueManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,7 +35,7 @@
 			<version>1.1.3</version>
 		</dependency>
 		<dependency>
-			<groupId>se.atoulou.graphql</groupId>
+			<groupId>se.atoulou.jgraphql</groupId>
 			<artifactId>parser</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

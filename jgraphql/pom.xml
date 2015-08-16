@@ -3,14 +3,23 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>se.atoulou.graphql</groupId>
+	<groupId>se.atoulou.jgraphql</groupId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<artifactId>graphql</artifactId>
+	<artifactId>jgraphql</artifactId>
 	<packaging>pom</packaging>
 
-	<name>graphql</name>
-	<url>http://maven.apache.org</url>
+	<name>JGraphQL</name>
+	<url>http://www.atoulou.se</url>
+	<scm>
+		<url>https://github.com/JGraphQL/JGraphQL</url>
+		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git</connection>
+		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git</developerConnection>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/JGraphQL/JGraphQL/issues</url>
+	</issueManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

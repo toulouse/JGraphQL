@@ -1,6 +1,6 @@
-package se.atoulou.graphql.schema;
+package se.atoulou.jgraphql.schema;
 
-import se.atoulou.graphql.annotations.NotNull;
+import se.atoulou.jgraphql.annotations.NotNull;
 
 public class InputValue {
     private final @NotNull String name;

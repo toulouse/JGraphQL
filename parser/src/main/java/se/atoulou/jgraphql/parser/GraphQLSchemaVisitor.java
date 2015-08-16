@@ -1,4 +1,4 @@
-package se.atoulou.graphql.parser;
+package se.atoulou.jgraphql.parser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,22 +9,22 @@ import org.antlr.v4.runtime.tree.RuleNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaBaseVisitor;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.ArgumentsDefinitionContext;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.FieldDefinitionContext;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.InputValueDefinitionContext;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.ListTypeContext;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.NonNullTypeContext;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.SchemaDocumentContext;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.TypeContext;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.TypeDefinitionContext;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.TypeNameContext;
-import se.atoulou.graphql.parser.antlr.GraphQLSchemaParser.ValueContext;
-import se.atoulou.graphql.schema.Field;
-import se.atoulou.graphql.schema.InputValue;
-import se.atoulou.graphql.schema.Schema;
-import se.atoulou.graphql.schema.Type;
-import se.atoulou.graphql.schema.Type.TypeKind;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaBaseVisitor;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ArgumentsDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.FieldDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InputValueDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ListTypeContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.NonNullTypeContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.SchemaDocumentContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeNameContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ValueContext;
+import se.atoulou.jgraphql.schema.Field;
+import se.atoulou.jgraphql.schema.InputValue;
+import se.atoulou.jgraphql.schema.Schema;
+import se.atoulou.jgraphql.schema.Type;
+import se.atoulou.jgraphql.schema.Type.TypeKind;
 
 public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
     private static final Logger LOG = LoggerFactory.getLogger(GraphQLSchemaVisitor.class);
