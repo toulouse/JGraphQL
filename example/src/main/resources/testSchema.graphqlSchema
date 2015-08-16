@@ -9,6 +9,7 @@ interface Bar {
 
 type Baz : Foo, Bar {
 	name: String
-	description: String
+	description: String!
 	type: String
+	whatever(parameter : String = "somestuff", parameter2 : Boolean = false): String
 }

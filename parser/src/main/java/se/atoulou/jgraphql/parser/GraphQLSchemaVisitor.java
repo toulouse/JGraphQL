@@ -13,6 +13,7 @@ import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaBaseVisitor;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ArgumentsDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.FieldDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InputValueDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InterfaceDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ListTypeContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.NonNullTypeContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.SchemaDocumentContext;
@@ -21,6 +22,7 @@ import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeDefinitionContex
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeNameContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ValueContext;
 import se.atoulou.jgraphql.schema.Field;
+import se.atoulou.jgraphql.schema.Field.Builder;
 import se.atoulou.jgraphql.schema.InputValue;
 import se.atoulou.jgraphql.schema.Schema;
 import se.atoulou.jgraphql.schema.Type;
@@ -29,20 +31,16 @@ import se.atoulou.jgraphql.schema.Type.TypeKind;
 public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
     private static final Logger LOG = LoggerFactory.getLogger(GraphQLSchemaVisitor.class);
 
-    private final Schema.Builder  schemaBuilder;
-    private final Stack<RuleNode> nodeStack;
-    private final Stack<Object>   objectStack;
-    private Object                previousObject;
+    private final Schema.Builder schemaBuilder;
+    private final Stack<Object>  objectStack;
+    private Object               previousObject;
 
     public GraphQLSchemaVisitor() {
         super();
 
         this.schemaBuilder = Schema.builder();
-        this.schemaBuilder.types(new ArrayList<>());
-        this.schemaBuilder.directives(new ArrayList<>());
 
         this.objectStack = new Stack<>();
-        this.nodeStack = new Stack<>();
     }
 
     public Schema.Builder getSchemaBuilder() {
@@ -52,61 +50,94 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
     @Override
     public Void visitSchemaDocument(SchemaDocumentContext ctx) {
         LOG.trace("Entering {}", "schema document");
-        this.nodeStack.push(ctx);
 
         super.visitSchemaDocument(ctx);
 
-        this.nodeStack.pop();
         LOG.trace("Exiting {}", "schema document");
         return null;
     }
 
     @Override
     public Void visitTypeDefinition(TypeDefinitionContext ctx) {
-        LOG.trace("Entering {}: {}", "type definition", ctx.NAME().getText());
-        this.nodeStack.push(ctx);
+        LOG.trace("<Type name=\"{}\">", ctx.NAME().getText());
 
-        // Populate builder
+        // Push builder onto stack & populate
         Type.Builder typeB = Type.builder();
-        typeB.kind(TypeKind.OBJECT);
-        typeB.name(ctx.NAME().getText());
-        typeB.fields(new ArrayList<>());
-        List<TypeNameContext> types = ctx.implementTypes().typeName();
-        List<String> typeNames = types.stream().map(typeName -> typeName.NAME().getText()).collect(Collectors.toList());
-        LOG.trace("implements {}", typeNames);
-
-        // Push onto stack
         this.objectStack.push(typeB);
-
-        // Add to schema
         this.schemaBuilder.types().add(typeB);
 
+        typeB.kind(TypeKind.OBJECT);
+        typeB.name(ctx.NAME().getText());
+
+        List<TypeNameContext> types = ctx.implementTypes().typeName();
+        List<String> typeNames = types.stream().map(typeName -> typeName.NAME().getText()).collect(Collectors.toList());
+        // TODO: add type builder registration mechanism
+        LOG.trace(">implements {}", typeNames);
+
         for (FieldDefinitionContext fieldDefinition : ctx.fieldDefinition()) {
-            Field.Builder fieldB = Field.builder();
-
-            String name = fieldDefinition.getChild(0).getText();
-            fieldB.name(name);
-
-            ArgumentsDefinitionContext argumentsDefinition = fieldDefinition.argumentsDefinition();
-            if (argumentsDefinition == null) {
-                fieldB.args(new ArrayList<>());
-            } else {
-                visitArgumentsDefinition(fieldDefinition.argumentsDefinition());
-                assert this.previousObject instanceof List;
-                @SuppressWarnings("unchecked")
-                List<InputValue.Builder> args = (List<InputValue.Builder>) this.previousObject;
-                fieldB.args(args);
-            }
-
-            visitType(fieldDefinition.type());
-            assert this.previousObject instanceof Type.Builder;
-            Type.Builder type = (Type.Builder) this.previousObject;
-            fieldB.type(type);
+            visitFieldDefinition(fieldDefinition);
+            assert this.previousObject instanceof Field.Builder;
+            Field.Builder fieldB = (Field.Builder) this.previousObject;
+            typeB.fields().add(fieldB);
         }
 
         this.previousObject = this.objectStack.pop();
-        this.nodeStack.pop();
-        LOG.trace("Exiting {}: {}", "type definition", ctx.NAME().getText());
+        LOG.trace("</Type>");
+        return null;
+    }
+
+    @Override
+    public Void visitInterfaceDefinition(InterfaceDefinitionContext ctx) {
+        LOG.trace("<Interface name=\"{}\">", ctx.NAME().getText());
+
+        // Push builder onto stack & populate
+        Type.Builder typeB = Type.builder();
+        this.objectStack.push(typeB);
+        this.schemaBuilder.types().add(typeB);
+
+        typeB.kind(TypeKind.INTERFACE);
+        typeB.name(ctx.NAME().getText());
+
+        for (FieldDefinitionContext fieldDefinition : ctx.fieldDefinition()) {
+            visitFieldDefinition(fieldDefinition);
+            assert this.previousObject instanceof Field.Builder;
+            Field.Builder fieldB = (Field.Builder) this.previousObject;
+            typeB.fields().add(fieldB);
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Interface>");
+        return null;
+    }
+
+    @Override
+    public Void visitFieldDefinition(FieldDefinitionContext ctx) {
+        String name = ctx.getChild(0).getText();
+        LOG.trace("<Field name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        Field.Builder fieldB = Field.builder();
+        this.objectStack.push(fieldB);
+
+        fieldB.name(name);
+
+        visitType(ctx.type());
+        assert this.previousObject instanceof Type.Builder;
+        Type.Builder type = (Type.Builder) this.previousObject;
+        fieldB.type(type);
+        LOG.trace(" ({} : {})", fieldB.name(), fieldB.type());
+
+        ArgumentsDefinitionContext argumentsDefinition = ctx.argumentsDefinition();
+        if (argumentsDefinition != null) {
+            visitArgumentsDefinition(ctx.argumentsDefinition());
+            assert this.previousObject instanceof List;
+            @SuppressWarnings("unchecked")
+            List<InputValue.Builder> args = (List<InputValue.Builder>) this.previousObject;
+            fieldB.args(args);
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Field>");
         return null;
     }
 
@@ -120,8 +151,8 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
             inputValueB.name(name);
 
             visitType(inputValueDefinition.type());
-            assert this.previousObject instanceof Type;
-            Type type = (Type) this.previousObject;
+            assert this.previousObject instanceof Type.Builder;
+            Type.Builder type = (Type.Builder) this.previousObject;
             inputValueB.type(type);
 
             ValueContext defaultValue = inputValueDefinition.value();
@@ -130,6 +161,8 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
             }
 
             inputValues.add(inputValueB);
+            LOG.trace(">>arg ({} : {}) = {}", name, type.name(), defaultValue.getText());
+
         }
 
         this.previousObject = inputValues;

@@ -71,9 +71,17 @@ public class Field {
             return new Field(name, description, args, type, isDeprecated, deprecationReason);
         }
 
+        public String name() {
+            return name;
+        }
+
         public Builder name(String name) {
             this.name = name;
             return this;
+        }
+
+        public String description() {
+            return description;
         }
 
         public Builder description(String description) {
@@ -81,9 +89,17 @@ public class Field {
             return this;
         }
 
+        public List<InputValue.Builder> args() {
+            return args;
+        }
+
         public Builder args(List<InputValue.Builder> args) {
             this.args = args;
             return this;
+        }
+
+        public Type.Builder type() {
+            return type;
         }
 
         public Builder type(Type.Builder type) {
@@ -91,9 +107,17 @@ public class Field {
             return this;
         }
 
+        public Boolean isDeprecated() {
+            return isDeprecated;
+        }
+
         public Builder isDeprecated(Boolean isDeprecated) {
             this.isDeprecated = isDeprecated;
             return this;
+        }
+
+        public String deprecationReason() {
+            return deprecationReason;
         }
 
         public Builder deprecationReason(String deprecationReason) {

@@ -37,16 +37,20 @@ public class InputValue {
     }
 
     public static class Builder {
-        private String name;
-        private String description;
-        private Type   type;
-        private String defaultValue;
+        private String       name;
+        private String       description;
+        private Type.Builder type;
+        private String       defaultValue;
 
         protected Builder() {
         }
 
         public InputValue build() {
-            return new InputValue(name, description, type, defaultValue);
+            return new InputValue(name, description, type.build(), defaultValue);
+        }
+
+        public String name() {
+            return name;
         }
 
         public Builder name(String name) {
@@ -54,14 +58,26 @@ public class InputValue {
             return this;
         }
 
+        public String description() {
+            return description;
+        }
+
         public Builder description(String description) {
             this.description = description;
             return this;
         }
 
-        public Builder type(Type type) {
+        public Type.Builder type() {
+            return type;
+        }
+
+        public Builder type(Type.Builder type) {
             this.type = type;
             return this;
+        }
+
+        public String defaultValue() {
+            return defaultValue;
         }
 
         public Builder defaultValue(String defaultValue) {
