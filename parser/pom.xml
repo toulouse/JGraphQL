@@ -13,11 +13,11 @@
 	<packaging>jar</packaging>
 
 	<name>Parser</name>
-	<url>http://www.atoulou.se</url>
+	<url>https://jgraphql.github.io/JGraphQL/${project.artifactId}</url>	
 	<scm>
-		<url>https://github.com/JGraphQL/JGraphQL/parser</url>
-		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git/parser</connection>
-		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git/parser</developerConnection>
+		<url>https://github.com/JGraphQL/JGraphQL/tree/master/parser</url>
+		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git</connection>
+		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git</developerConnection>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
@@ -26,6 +26,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
 	</properties>
 

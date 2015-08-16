@@ -13,11 +13,11 @@
 	<packaging>jar</packaging>
 
 	<name>Example</name>
-	<url>http://www.atoulou.se</url>
+	<url>https://jgraphql.github.io/JGraphQL/${project.artifactId}</url>
 	<scm>
-		<url>https://github.com/JGraphQL/JGraphQL/example</url>
-		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git/example</connection>
-		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git/example</developerConnection>
+		<url>https://github.com/JGraphQL/JGraphQL/tree/master/example</url>
+		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git</connection>
+		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git</developerConnection>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
@@ -26,6 +26,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<dependencies>

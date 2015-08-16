@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
 		<groupId>se.atoulou.jgraphql</groupId>
 		<artifactId>jgraphql</artifactId>
@@ -14,11 +13,11 @@
 	<packaging>jar</packaging>
 
 	<name>Annotations</name>
-	<url>http://www.atoulou.se</url>
+	<url>https://jgraphql.github.io/JGraphQL/${project.artifactId}</url>
 	<scm>
-		<url>https://github.com/JGraphQL/JGraphQL/annotations</url>
-		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git/annotations</connection>
-		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git/annotations</developerConnection>
+		<url>https://github.com/JGraphQL/JGraphQL/tree/master/annotations</url>
+		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git</connection>
+		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git</developerConnection>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
@@ -27,5 +26,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 </project>
