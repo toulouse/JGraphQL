@@ -2,7 +2,7 @@ package se.atoulou.graphql.schema;
 
 import java.util.List;
 
-import se.atoulou.graphql.common.NotNull;
+import se.atoulou.graphql.annotations.NotNull;
 
 public class Directive {
     private final @NotNull String                    name;

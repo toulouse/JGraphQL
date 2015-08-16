@@ -3,7 +3,7 @@ package se.atoulou.graphql.schema;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.graphql.common.NotNull;
+import se.atoulou.graphql.annotations.NotNull;
 
 public class Field {
     private final @NotNull String                    name;

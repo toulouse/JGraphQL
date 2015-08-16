@@ -1,6 +1,6 @@
 package se.atoulou.graphql.schema;
 
-import se.atoulou.graphql.common.NotNull;
+import se.atoulou.graphql.annotations.NotNull;
 
 public class EnumValue {
     private final @NotNull String  name;
