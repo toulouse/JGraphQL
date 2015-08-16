@@ -1,5 +1,6 @@
 package se.atoulou.graphql.schema;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import se.atoulou.graphql.annotations.NotNull;
@@ -60,6 +61,7 @@ public class Directive {
         private Boolean          onField;
 
         protected Builder() {
+            args = new ArrayList<>();
         }
 
         public Directive build() {

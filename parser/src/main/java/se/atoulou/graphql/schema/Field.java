@@ -1,5 +1,6 @@
 package se.atoulou.graphql.schema;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +62,7 @@ public class Field {
         private String                   deprecationReason;
 
         protected Builder() {
+            args = new ArrayList<>();
         }
 
         public Field build() {

@@ -1,5 +1,6 @@
 package se.atoulou.graphql.schema;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -210,6 +211,11 @@ public class Type {
         private List<InputValue.Builder> inputFields;
 
         protected Builder() {
+            fields = new ArrayList<>();
+            interfaces = new ArrayList<>();
+            possibleTypes = new ArrayList<>();
+            enumValues = new ArrayList<>();
+            inputFields = new ArrayList<>();
         }
 
         public Type build() {

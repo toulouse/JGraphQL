@@ -1,5 +1,6 @@
 package se.atoulou.graphql.schema;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,8 @@ public class Schema {
         private List<Directive.Builder> directives;
 
         protected Builder() {
+            types = new ArrayList<>();
+            directives = new ArrayList<>();
         }
 
         public Schema build() {
