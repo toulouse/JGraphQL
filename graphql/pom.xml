@@ -17,9 +17,10 @@
 	</properties>
 
 	<modules>
+		<module>../annotations</module>
 		<module>../example</module>
 		<module>../parser</module>
-		<module>../annotations</module>
+		<module>../schema</module>
 	</modules>
 	<dependencies>
 		<dependency>
