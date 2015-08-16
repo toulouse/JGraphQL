@@ -24,3 +24,8 @@ enum SomeEnum {
 	D4, E5,
 	F6
 }
+
+input Bar {
+	name: Float = 3.0e9 
+	description: Int = 30
+}

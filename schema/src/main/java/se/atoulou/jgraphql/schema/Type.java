@@ -330,6 +330,15 @@ public class Type {
             this.ofType = ofType;
             return this;
         }
+        
+        public List<InputValue.Builder> inputFields() {
+            return inputFields;
+        }
+        
+        public Builder inputFields(List<InputValue.Builder> inputFields) {
+            this.inputFields = inputFields;
+            return this;
+        }
     }
 
     @Override

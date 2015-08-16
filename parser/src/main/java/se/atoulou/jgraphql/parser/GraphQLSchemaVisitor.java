@@ -13,6 +13,7 @@ import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ArgumentsDefinitionC
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.EnumDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.EnumValueDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.FieldDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InputObjectDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InputValueDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InterfaceDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ListTypeContext;
@@ -76,7 +77,7 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         List<TypeNameContext> types = ctx.implementTypes().typeName();
         List<String> typeNames = types.stream().map(typeName -> typeName.NAME().getText()).collect(Collectors.toList());
         // TODO: add type builder registration mechanism
-        LOG.trace(">implements {}", typeNames);
+        LOG.trace("implements {}", typeNames);
 
         for (FieldDefinitionContext fieldDefinition : ctx.fieldDefinition()) {
             visitFieldDefinition(fieldDefinition);
@@ -130,7 +131,7 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         UnionMembersContext unionMembers = ctx.unionMembers();
         while (unionMembers != null) {
             String typeName = unionMembers.typeName().getText();
-            LOG.trace("<Type name=\"{}\"/>", typeName);
+            LOG.trace("<Type name=\"{}\" />", typeName);
 
             Type.Builder possibleTypeB = Type.builder();
             possibleTypeB.name(typeName);
@@ -177,7 +178,7 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         List<EnumValueDefinitionContext> enumValueDefinitions = ctx.enumValueDefinition();
         for (EnumValueDefinitionContext enumValueDefinition : enumValueDefinitions) {
             String enumName = enumValueDefinition.NAME().getText();
-            LOG.trace("<EnumValue name=\"{}\"/>", enumName);
+            LOG.trace("<EnumValue name=\"{}\" />", enumName);
 
             EnumValue.Builder enumValueB = EnumValue.builder();
             enumValueB.name(enumName);
@@ -186,6 +187,33 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
 
         this.previousObject = this.objectStack.pop();
         LOG.trace("</Enum>");
+        return null;
+    }
+
+    @Override
+    public Void visitInputObjectDefinition(InputObjectDefinitionContext ctx) {
+        String name = ctx.NAME().getText();
+        LOG.trace("<InputObject name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        Type.Builder typeB = Type.builder();
+        this.objectStack.push(typeB);
+        this.schemaBuilder.types().add(typeB);
+
+        typeB.kind(TypeKind.INPUT_OBJECT);
+        typeB.name(name);
+
+        List<InputValueDefinitionContext> inputValueDefinitions = ctx.inputValueDefinition();
+        for (InputValueDefinitionContext inputValueDefinition : inputValueDefinitions) {
+            visitInputValueDefinition(inputValueDefinition);
+            assert this.previousObject instanceof InputValue.Builder;
+            InputValue.Builder inputValueB = (InputValue.Builder) this.previousObject;
+
+            typeB.inputFields().add(inputValueB);
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</InputObject>");
         return null;
     }
 
@@ -225,26 +253,41 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         List<InputValue.Builder> inputValues = new ArrayList<>();
 
         for (InputValueDefinitionContext inputValueDefinition : ctx.inputValueDefinition()) {
-            InputValue.Builder inputValueB = InputValue.builder();
-            String name = inputValueDefinition.NAME().getText();
-            inputValueB.name(name);
-
-            visitType(inputValueDefinition.type());
-            assert this.previousObject instanceof Type.Builder;
-            Type.Builder type = (Type.Builder) this.previousObject;
-            inputValueB.type(type);
-
-            ValueContext defaultValue = inputValueDefinition.value();
-            if (defaultValue != null) {
-                inputValueB.defaultValue(defaultValue.getText());
-            }
-
+            visitInputValueDefinition(inputValueDefinition);
+            assert this.previousObject instanceof InputValue.Builder;
+            InputValue.Builder inputValueB = (InputValue.Builder) this.previousObject;
             inputValues.add(inputValueB);
-            LOG.trace(">>arg ({} : {}) = {}", name, type.name(), defaultValue.getText());
-
         }
 
         this.previousObject = inputValues;
+        return null;
+    }
+
+    @Override
+    public Void visitInputValueDefinition(InputValueDefinitionContext ctx) {
+        String name = ctx.NAME().getText();
+        LOG.trace("<InputValue name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        InputValue.Builder inputValueB = InputValue.builder();
+        this.objectStack.push(inputValueB);
+
+        inputValueB.name(name);
+
+        visitType(ctx.type());
+        assert this.previousObject instanceof Type.Builder;
+        Type.Builder type = (Type.Builder) this.previousObject;
+        inputValueB.type(type);
+
+        ValueContext defaultValue = ctx.value();
+        if (defaultValue != null) {
+            inputValueB.defaultValue(defaultValue.getText());
+        }
+        LOG.trace("<Type name=\"{}\" />", type.name());
+        LOG.trace("<DefaultValue value=\"{}\" />", defaultValue.getText());
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</InputValue>");
         return null;
     }
 
