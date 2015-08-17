@@ -6,8 +6,8 @@
 			</Pattern>
 		</layout>
 	</appender>
-	<logger name="se.atoulou" level="DEBUG" />
-	<root level="debug">
+	<logger name="se.atoulou" level="TRACE" />
+	<root level="trace">
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>

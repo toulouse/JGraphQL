@@ -61,6 +61,7 @@
 	</properties>
 
 	<modules>
+		<module>example</module>
 		<module>parser</module>
 		<module>models</module>
 	</modules>

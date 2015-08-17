@@ -1,15 +1,27 @@
-query IntrospectionQuery {
+query getZuckProfile($devicePicSize: Int = 2, $devicePicSize2: Boolean) {
+  user(id: 4) {
+    id @foo @bar @baz(asdf: 5, qwer: 6)
+    name
+    profilePic(size: $devicePicSize)
+  }
+}
+
+
+query IntrospectionQuery @foo @bar @baz(asdf: 5, qwer: 6) {
   __schema {
     queryType { name }
     mutationType { name }
-    types {
+    types @baz {
       ...FullType
     }
     directives {
       name
+      ...on GHJKL @bwah {
+        bleh
+      } 
       description
       args {
-        ...InputValue
+        ...InputValue @asdf
       }
       onOperation
       onFragment
@@ -17,7 +29,7 @@ query IntrospectionQuery {
     }
   }
 }
-fragment FullType on __Type {
+fragment FullType on __Type @qwerty {
   kind
   name
   description
