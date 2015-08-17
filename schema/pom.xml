@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
 		<groupId>se.atoulou.jgraphql</groupId>
 		<artifactId>jgraphql</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -18,7 +17,8 @@
 		<url>https://github.com/JGraphQL/JGraphQL/tree/master/schema</url>
 		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git</connection>
 		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git</developerConnection>
-	</scm>
+	  <tag>jgraphql-0.0.1</tag>
+  </scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>https://github.com/JGraphQL/JGraphQL/issues</url>
@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>se.atoulou.jgraphql</groupId>
 			<artifactId>annotations</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 </project>
