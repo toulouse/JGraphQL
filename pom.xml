@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<name>JGraphQL</name>
-	<url>http://jgraphql.github.io/JGraphQL/</url>
+	<url>http://jgraphql.atoulou.se/</url>
 	<licenses>
 		<license>
 			<name>BSD Simplified</name>
@@ -28,8 +28,8 @@
 	</issueManagement>
 	<distributionManagement>
 		<site>
-			<id>GitHub Pages</id>
-			<url>scm:git:git@github.com/JGraphQL/JGraphQL.git</url>
+			<id>jgraphql.s3.site</id>
+			<url>s3://jgraphql.atoulou.se/</url>
 		</site>
 		<repository>
 			<id>jgraphql.s3.release</id>
@@ -80,7 +80,7 @@
 			</snapshots>
 			<id>JGraphQL</id>
 			<name>JGraphQL Repository</name>
-			<url>http://jgraphql.atoulou.se</url>
+			<url>http://jgraphql.atoulou.se/snapshot</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -160,9 +160,6 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.4</version>
 				<configuration>
-					<configuration>
-						<skipDeploy>true</skipDeploy>
-					</configuration>
 					<reportPlugins>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
@@ -249,15 +246,6 @@
 							</configuration>
 						</plugin>
 					</reportPlugins>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-scm-publish-plugin</artifactId>
-				<version>1.1</version>
-				<configuration>
-					<pubScmUrl>scm:git:git@github.com:JGraphQL/JGraphQL.git</pubScmUrl>
-					<scmBranch>gh-pages</scmBranch>
 				</configuration>
 			</plugin>
 		</plugins>

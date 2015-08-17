@@ -9,7 +9,6 @@
 	<packaging>jar</packaging>
 
 	<name>Example</name>
-	<url>https://jgraphql.github.io/JGraphQL/${project.artifactId}</url>
 	<scm>
 		<url>https://github.com/JGraphQL/JGraphQL/tree/master/example</url>
 		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git</connection>

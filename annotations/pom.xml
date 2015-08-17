@@ -13,7 +13,7 @@
 	<packaging>jar</packaging>
 
 	<name>Annotations</name>
-	<url>https://jgraphql.github.io/JGraphQL/${project.artifactId}</url>
+	<url>http://jgraphql.atoulou.se/${project.artifactId}</url>
 	<scm>
 		<url>https://github.com/JGraphQL/JGraphQL/tree/master/annotations</url>
 		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git</connection>
