@@ -31,6 +31,15 @@
 			<id>GitHub Pages</id>
 			<url>scm:git:git@github.com/JGraphQL/JGraphQL.git</url>
 		</site>
+		<repository>
+			<id>jgraphql.s3.release</id>
+			<url>s3://jgraphql.atoulou.se/release</url>
+		</repository>
+		<snapshotRepository>
+			<id>jgraphql.s3.snapshot</id>
+			<url>s3://jgraphql.atoulou.se/snapshot</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
 	</distributionManagement>
 	<developers>
 		<developer>
@@ -56,6 +65,24 @@
 		<module>parser</module>
 		<module>schema</module>
 	</modules>
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>JGraphQL</id>
+			<name>JGraphQL Repository</name>
+			<url>http://jgraphql.atoulou.se</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -65,6 +92,13 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.kuali.maven.wagons</groupId>
+				<artifactId>maven-s3-wagon</artifactId>
+				<version>1.2.1</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
