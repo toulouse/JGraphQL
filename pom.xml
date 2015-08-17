@@ -4,9 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>se.atoulou.jgraphql</groupId>
-	<version>0.0.1-SNAPSHOT</version>
-
 	<artifactId>jgraphql</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>JGraphQL</name>
@@ -54,7 +53,6 @@
 
 	<modules>
 		<module>annotations</module>
-		<module>example</module>
 		<module>parser</module>
 		<module>schema</module>
 	</modules>
