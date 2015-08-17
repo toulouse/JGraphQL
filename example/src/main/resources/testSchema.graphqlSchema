@@ -13,6 +13,7 @@ type Baz : Foo, Bar {
 	type: String
 	whatever(parameter : String = "somestuff", parameter2 : Boolean = false): String
 	floatTest(aFloat : Float = 9.0e34): String
+	arrayNonNullTest: [String!]!
 }
 
 scalar SomeScalar

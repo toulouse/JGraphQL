@@ -200,6 +200,8 @@ public class Type {
     }
 
     public static class Builder {
+        private Type cachedBuild;
+
         private TypeKind                 kind;
         private String                   name;
         private String                   description;
@@ -219,39 +221,50 @@ public class Type {
         }
 
         public Type build() {
+            if (cachedBuild != null) {
+                return cachedBuild;
+            }
+
             switch (kind) {
             case SCALAR:
-                return new ScalarType(kind, name, description);
+                cachedBuild = new ScalarType(kind, name, description);
+                return cachedBuild;
             case OBJECT: {
                 List<Field> fields = this.fields.stream().map(builder -> builder.build()).collect(Collectors.toList());
                 List<Type> interfaces = this.interfaces.stream().map(builder -> builder.build()).collect(Collectors.toList());
-                return new ObjectType(kind, name, description, fields, interfaces);
+                cachedBuild = new ObjectType(kind, name, description, fields, interfaces);
+                return cachedBuild;
             }
             case INTERFACE: {
                 List<Field> fields = this.fields.stream().map(builder -> builder.build()).collect(Collectors.toList());
                 List<Type> possibleTypes = this.possibleTypes.stream().map(builder -> builder.build()).collect(Collectors.toList());
-                return new InterfaceType(kind, name, description, fields, possibleTypes);
+                cachedBuild = new InterfaceType(kind, name, description, fields, possibleTypes);
+                return cachedBuild;
             }
             case UNION: {
                 List<Type> possibleTypes = this.possibleTypes.stream().map(builder -> builder.build()).collect(Collectors.toList());
-                return new UnionType(kind, name, description, possibleTypes);
-
+                cachedBuild = new UnionType(kind, name, description, possibleTypes);
+                return cachedBuild;
             }
             case ENUM: {
                 List<EnumValue> enumValues = this.enumValues.stream().map(builder -> builder.build()).collect(Collectors.toList());
-                return new EnumType(kind, name, description, enumValues);
+                cachedBuild = new EnumType(kind, name, description, enumValues);
+                return cachedBuild;
             }
             case INPUT_OBJECT: {
                 List<InputValue> inputFields = this.inputFields.stream().map(builder -> builder.build()).collect(Collectors.toList());
-                return new InputObjectType(kind, name, description, inputFields);
+                cachedBuild = new InputObjectType(kind, name, description, inputFields);
+                return cachedBuild;
             }
             case LIST: {
                 Type ofType = this.ofType.build();
-                return new ListType(kind, name, description, ofType);
+                cachedBuild = new ListType(kind, name, description, ofType);
+                return cachedBuild;
             }
             case NON_NULL: {
                 Type ofType = this.ofType.build();
-                return new NonNullType(kind, name, description, ofType);
+                cachedBuild = new NonNullType(kind, name, description, ofType);
+                return cachedBuild;
             }
             default:
                 assert false;
@@ -264,6 +277,7 @@ public class Type {
         }
 
         public Builder kind(TypeKind kind) {
+            assert cachedBuild == null;
             this.kind = kind;
             return this;
         }
@@ -273,6 +287,7 @@ public class Type {
         }
 
         public Builder name(String name) {
+            assert cachedBuild == null;
             this.name = name;
             return this;
         }
@@ -282,6 +297,7 @@ public class Type {
         }
 
         public Builder description(String description) {
+            assert cachedBuild == null;
             this.description = description;
             return this;
         }
@@ -291,6 +307,7 @@ public class Type {
         }
 
         public Builder fields(List<Field.Builder> fields) {
+            assert cachedBuild == null;
             this.fields = fields;
             return this;
         }
@@ -300,6 +317,7 @@ public class Type {
         }
 
         public Builder interfaces(List<Type.Builder> interfaces) {
+            assert cachedBuild == null;
             this.interfaces = interfaces;
             return this;
         }
@@ -309,6 +327,7 @@ public class Type {
         }
 
         public Builder possibleTypes(List<Type.Builder> possibleTypes) {
+            assert cachedBuild == null;
             this.possibleTypes = possibleTypes;
             return this;
         }
@@ -318,6 +337,7 @@ public class Type {
         }
 
         public Builder enumValues(List<EnumValue.Builder> enumValues) {
+            assert cachedBuild == null;
             this.enumValues = enumValues;
             return this;
         }
@@ -327,15 +347,17 @@ public class Type {
         }
 
         public Builder ofType(Type.Builder ofType) {
+            assert cachedBuild == null;
             this.ofType = ofType;
             return this;
         }
-        
+
         public List<InputValue.Builder> inputFields() {
             return inputFields;
         }
-        
+
         public Builder inputFields(List<InputValue.Builder> inputFields) {
+            assert cachedBuild == null;
             this.inputFields = inputFields;
             return this;
         }
