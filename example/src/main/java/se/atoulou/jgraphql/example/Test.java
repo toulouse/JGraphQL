@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import se.atoulou.jgraphql.parser.SchemaParser;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaLexer;
+import se.atoulou.jgraphql.schema.PrettyPrinter;
 import se.atoulou.jgraphql.schema.Schema;
 
 public class Test {
@@ -26,11 +27,11 @@ public class Test {
 
         tokenStream.fill();
         for (Token token : tokenStream.getTokens()) {
-            LOG.debug("token type: {} str: {}", GraphQLSchemaLexer.VOCABULARY.getSymbolicName(token.getType()), token);
+            LOG.trace("token type: {} str: {}", GraphQLSchemaLexer.VOCABULARY.getSymbolicName(token.getType()), token);
         }
 
         in = Test.class.getResourceAsStream("/testSchema.graphqlSchema");
         Schema schema = new SchemaParser().parse(in);
-        LOG.debug("Schema: {}", schema);
+        LOG.debug("Schema: {}", new PrettyPrinter(schema));
     }
 }
