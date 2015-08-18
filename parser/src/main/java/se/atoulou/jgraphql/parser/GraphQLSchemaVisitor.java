@@ -89,11 +89,10 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         this.objectStack.push(typeB);
         this.schemaBuilder.types().add(typeB);
 
-        List<Type.Builder> implementedTypes = new ArrayList<>();
         for (TypeNameContext typeName : ctx.implementTypes().typeName()) {
             String typeNameString = typeName.NAME().getText();
             Type.Builder implementedTypeB = this.typeRegistry.registerUsage(typeNameString);
-            implementedTypes.add(implementedTypeB);
+            typeB.interfaces().add(implementedTypeB);
             LOG.trace("<Implements name=\"{}\" />", typeNameString);
         }
 
