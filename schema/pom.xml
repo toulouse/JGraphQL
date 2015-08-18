@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>se.atoulou.jgraphql</groupId>
 		<artifactId>jgraphql</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
+		<version>0.0.2</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -17,7 +17,7 @@
 		<url>https://github.com/JGraphQL/JGraphQL/tree/master/schema</url>
 		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git</connection>
 		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git</developerConnection>
-	  <tag>HEAD</tag>
+	  <tag>jgraphql-0.0.2</tag>
   </scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>se.atoulou.jgraphql</groupId>
 			<artifactId>annotations</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.2</version>
 		</dependency>
 	</dependencies>
 </project>
