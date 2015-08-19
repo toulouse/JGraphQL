@@ -1,4 +1,4 @@
-lexer grammar GraphQL;
+lexer grammar GraphQLTokens;
 
 // Ignored
 WHITESPACE : [\t\u000b\u000c \u00a0]+ -> skip;

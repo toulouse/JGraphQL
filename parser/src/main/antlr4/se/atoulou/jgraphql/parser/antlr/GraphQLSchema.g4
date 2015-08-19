@@ -30,7 +30,7 @@ GraphQL grammar derived from:
 */
 grammar GraphQLSchema;
 
-import GraphQL;
+import GraphQLTokens;
 
 schemaDocument
     : schemaDefinition+
