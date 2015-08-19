@@ -2,7 +2,6 @@ package se.atoulou.jgraphql.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import org.slf4j.Logger;
@@ -31,7 +30,6 @@ import se.atoulou.jgraphql.schema.Field;
 import se.atoulou.jgraphql.schema.InputValue;
 import se.atoulou.jgraphql.schema.Schema;
 import se.atoulou.jgraphql.schema.Type;
-import se.atoulou.jgraphql.schema.Type.Builder;
 import se.atoulou.jgraphql.schema.Type.TypeKind;
 
 public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
@@ -73,9 +71,10 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         super.visitSchemaDocument(ctx);
 
         LOG.trace("Exiting {}", "schema document");
-        for (Map.Entry<String, Builder> typeEntry : typeRegistry.types.entrySet()) {
-            LOG.trace("Type: {} {}", typeEntry.getKey(), typeEntry.getValue().build());
-        }
+        LOG.trace("Adding objects possibleTypes to interfaces");
+        this.typeRegistry.reconcilePossibleTypes();
+
+        // TODO: Schema validation
         return null;
     }
 

@@ -1,9 +1,12 @@
 package se.atoulou.jgraphql.parser;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import se.atoulou.jgraphql.schema.Type;
+import se.atoulou.jgraphql.schema.Type.Builder;
 import se.atoulou.jgraphql.schema.Type.TypeKind;
 
 public class TypeRegistry {
@@ -37,5 +40,19 @@ public class TypeRegistry {
         typeB.kind(kind);
 
         return typeB;
+    }
+
+    public void reconcilePossibleTypes() {
+        List<Type.Builder> objects = types.values().stream().filter(typeB -> typeB.kind() == TypeKind.OBJECT).collect(Collectors.toList());
+
+        for (Type.Builder typeB : objects) {
+            List<Type.Builder> implementedTypes = typeB.interfaces();
+            for (Builder implementedType : implementedTypes) {
+                assert implementedType.kind() == TypeKind.INTERFACE;
+                if (!implementedType.possibleTypes().contains(typeB)) {
+                    implementedType.possibleTypes().add(typeB);
+                }
+            }
+        }
     }
 }

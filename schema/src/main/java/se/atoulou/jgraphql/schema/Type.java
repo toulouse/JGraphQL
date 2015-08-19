@@ -65,10 +65,10 @@ public class Type {
     }
 
     public static class InterfaceType extends Type {
-        private final List<@NotNull Field> fields;
-        private final List<@NotNull Type>  possibleTypes;
+        private final List<@NotNull Field>  fields;
+        private final List<@NotNull String> possibleTypes;
 
-        public InterfaceType(TypeKind kind, String name, String description, List<@NotNull Field> fields, List<@NotNull Type> possibleTypes) {
+        public InterfaceType(TypeKind kind, String name, String description, List<@NotNull Field> fields, List<@NotNull String> possibleTypes) {
             super(kind, name, description);
             this.fields = fields;
             this.possibleTypes = possibleTypes;
@@ -78,7 +78,7 @@ public class Type {
             return fields;
         }
 
-        public List<@NotNull Type> getPossibleTypes() {
+        public List<@NotNull String> getPossibleTypes() {
             return possibleTypes;
         }
 
@@ -237,7 +237,7 @@ public class Type {
             }
             case INTERFACE: {
                 List<Field> fields = this.fields.stream().map(builder -> builder.build()).collect(Collectors.toList());
-                List<Type> possibleTypes = this.possibleTypes.stream().map(builder -> builder.build()).collect(Collectors.toList());
+                List<String> possibleTypes = this.possibleTypes.stream().map(builder -> builder.build().getName()).collect(Collectors.toList());
                 cachedBuild = new InterfaceType(kind, name, description, fields, possibleTypes);
                 return cachedBuild;
             }
