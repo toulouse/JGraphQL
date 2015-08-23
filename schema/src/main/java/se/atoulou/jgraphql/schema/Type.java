@@ -237,7 +237,7 @@ public class Type {
             }
             case INTERFACE: {
                 List<Field> fields = this.fields.stream().map(builder -> builder.build()).collect(Collectors.toList());
-                List<String> possibleTypes = this.possibleTypes.stream().map(builder -> builder.build().getName()).collect(Collectors.toList());
+                List<String> possibleTypes = this.possibleTypes.stream().map(builder -> builder.name()).collect(Collectors.toList());
                 cachedBuild = new InterfaceType(kind, name, description, fields, possibleTypes);
                 return cachedBuild;
             }
