@@ -24,13 +24,13 @@ THE SOFTWARE.
 
 GraphQL grammar derived from:
 
-	https://github.com/antlr/grammars-v4/blob/master/graphql/GraphQL.g4
+    https://github.com/antlr/grammars-v4/blob/master/graphql/GraphQL.g4
     https://github.com/graphql/graphql-js
 
 */
 grammar GraphQLSchema;
 
-import GraphQL;
+import GraphQLTokens, GraphQLSharedGrammar;
 
 schemaDocument
     : schemaDefinition+
@@ -46,82 +46,50 @@ schemaDefinition
     ;
 
 typeDefinition
-    :   'type' NAME implementTypes? BRACE_L fieldDefinition+ BRACE_R
+    : 'type' NAME implementTypes? BRACE_L fieldDefinition+ BRACE_R
     ;
 
 implementTypes
-    :   COLON typeName+
+    : COLON namedType+
     ;
 
 fieldDefinition
-    :   (NAME | 'type') argumentsDefinition? COLON type 
+    : (NAME | 'type') argumentsDefinition? COLON type
     ;
 
 argumentsDefinition
-    :   PAREN_L inputValueDefinition+ PAREN_R
+    : PAREN_L inputValueDefinition+ PAREN_R
     ;
 
 inputValueDefinition
-    :   NAME COLON type (EQUAL value)?
+    : NAME COLON type defaultValue?
     ;
 
 interfaceDefinition
-    :   'interface' NAME  BRACE_L fieldDefinition+ BRACE_R
+    : 'interface' NAME  BRACE_L fieldDefinition+ BRACE_R
     ;
 
 unionDefinition
-    :   'union' NAME EQUAL unionMembers
+    : 'union' NAME EQUAL unionMembers
     ;
 
 unionMembers
-    :   typeName
-    |   typeName PIPE unionMembers
+    : namedType
+    |   namedType PIPE unionMembers
     ;
 
 scalarDefinition
-    :   'scalar' typeName
+    : 'scalar' namedType
     ;
 
 enumDefinition
-    :   'enum' NAME BRACE_L enumValueDefinition+ BRACE_R
+    : 'enum' NAME BRACE_L enumValueDefinition+ BRACE_R
     ;
 
 enumValueDefinition
-    :   NAME 
+    : NAME
     ;
 
 inputObjectDefinition
-    :   'input' NAME BRACE_L inputValueDefinition+ BRACE_R
+    : 'input' NAME BRACE_L inputValueDefinition+ BRACE_R
     ;
-
-value
-    :   STRING_VALUE # stringValue
-    |   INTEGER_VALUE # intValue
-    |   FLOAT_VALUE # floatValue
-    |   BOOLEAN_VALUE # boolValue
-    |   array # arrayValue
-    ;
-
-type
-    :   typeName nonNullType?
-    |   listType nonNullType?
-    ;
-
-typeName
-    :   NAME
-    ;
-
-listType
-    :   BRACKET_L type BRACKET_R
-    ;
-
-nonNullType
-    : BANG
-    ;
-
-array
-    :   BRACKET_L value (COMMA value)* BRACKET_R
-    |   BRACKET_L BRACKET_R // empty array
-    ;
-
-

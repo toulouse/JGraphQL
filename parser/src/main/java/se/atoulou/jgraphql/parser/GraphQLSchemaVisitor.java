@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaBaseVisitor;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ArgumentsDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.DefaultValueContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.EnumDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.EnumValueDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.FieldDefinitionContext;
@@ -16,15 +17,14 @@ import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InputObjectDefinitio
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InputValueDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.InterfaceDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ListTypeContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.NamedTypeContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.NonNullTypeContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ScalarDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.SchemaDocumentContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeDefinitionContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeNameContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.UnionDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.UnionMembersContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ValueContext;
 import se.atoulou.jgraphql.schema.EnumValue;
 import se.atoulou.jgraphql.schema.Field;
 import se.atoulou.jgraphql.schema.InputValue;
@@ -88,11 +88,13 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         this.objectStack.push(typeB);
         this.schemaBuilder.types().add(typeB);
 
-        for (TypeNameContext typeName : ctx.implementTypes().typeName()) {
-            String typeNameString = typeName.NAME().getText();
-            Type.Builder implementedTypeB = this.typeRegistry.registerUsage(typeNameString);
-            typeB.interfaces().add(implementedTypeB);
-            LOG.trace("<Implements name=\"{}\" />", typeNameString);
+        if (ctx.implementTypes() != null) {
+            for (NamedTypeContext typeName : ctx.implementTypes().namedType()) {
+                String typeNameString = typeName.NAME().getText();
+                Type.Builder implementedTypeB = this.typeRegistry.registerUsage(typeNameString);
+                typeB.interfaces().add(implementedTypeB);
+                LOG.trace("<Implements name=\"{}\" />", typeNameString);
+            }
         }
 
         for (FieldDefinitionContext fieldDefinition : ctx.fieldDefinition()) {
@@ -141,7 +143,7 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
 
         UnionMembersContext unionMembers = ctx.unionMembers();
         while (unionMembers != null) {
-            String typeName = unionMembers.typeName().NAME().getText();
+            String typeName = unionMembers.namedType().NAME().getText();
             LOG.trace("<Type name=\"{}\" />", typeName);
 
             Type.Builder possibleTypeB = this.typeRegistry.registerUsage(typeName);
@@ -156,7 +158,7 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
 
     @Override
     public Void visitScalarDefinition(ScalarDefinitionContext ctx) {
-        String name = ctx.typeName().NAME().getText();
+        String name = ctx.namedType().NAME().getText();
         LOG.trace("<Scalar name=\"{}\">", name);
 
         // Push builder onto stack & populate
@@ -280,12 +282,13 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         Type.Builder type = (Type.Builder) this.previousObject;
         inputValueB.type(type);
 
-        ValueContext defaultValue = ctx.value();
+        DefaultValueContext defaultValue = ctx.defaultValue();
         if (defaultValue != null) {
-            inputValueB.defaultValue(defaultValue.getText());
+            String constValue = defaultValue.constValue().getText();
+            inputValueB.defaultValue(constValue);
+            LOG.trace("<DefaultValue value=\"{}\" />", defaultValue.getText());
         }
         LOG.trace("<Type name=\"{}\" />", type.name());
-        LOG.trace("<DefaultValue value=\"{}\" />", defaultValue.getText());
 
         this.previousObject = this.objectStack.pop();
         LOG.trace("</InputValue>");
@@ -295,46 +298,57 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
     @Override
     public Void visitType(TypeContext ctx) {
         String name = ctx.getText();
-        TypeNameContext typeName = ctx.typeName();
+
+        NamedTypeContext namedType = ctx.namedType();
         ListTypeContext listType = ctx.listType();
         NonNullTypeContext nonNull = ctx.nonNullType();
 
         LOG.trace("Visiting type: {}", name);
-
         if (nonNull != null) {
-            Type.Builder typeB = this.typeRegistry.registerUsage(name);
-            typeB.kind(TypeKind.NON_NULL);
-            this.objectStack.push(typeB);
-            if (typeName != null) {
-                visitTypeName(ctx.typeName());
-                assert this.previousObject instanceof Type.Builder;
-                typeB.ofType((Type.Builder) this.previousObject);
-            } else if (listType != null) {
-                visitListType(listType);
-                assert this.previousObject instanceof Type.Builder;
-                typeB.ofType((Type.Builder) this.previousObject);
-            } else {
-                assert false;
-            }
-            this.previousObject = this.objectStack.pop();
-            return null;
+            visitNonNullType(nonNull);
+        } else if (namedType != null) {
+            visitNamedType(ctx.namedType());
+        } else if (listType != null) {
+            visitListType(listType);
         } else {
-            if (typeName != null) {
-                visitTypeName(ctx.typeName());
-            } else if (listType != null) {
-                visitListType(listType);
-            } else {
-                assert false;
-            }
-            return null;
+            assert false;
         }
+        return null;
     }
 
     @Override
-    public Void visitTypeName(TypeNameContext ctx) {
-        String name = ctx.NAME().getText();
+    public Void visitNonNullType(NonNullTypeContext ctx) {
+        String name = ctx.getText();
+        NamedTypeContext namedType = ctx.namedType();
+        ListTypeContext listType = ctx.listType();
+
+        Type.Builder typeB = this.typeRegistry.registerUsage(name);
+        typeB.kind(TypeKind.NON_NULL);
+        this.objectStack.push(typeB);
+
+        if (namedType != null) {
+            visitNamedType(namedType);
+            assert this.previousObject instanceof Type.Builder;
+            Type.Builder type = (Type.Builder) this.previousObject;
+            typeB.ofType(type);
+        } else if (listType != null) {
+            visitListType(listType);
+            assert this.previousObject instanceof Type.Builder;
+            Type.Builder type = (Type.Builder) this.previousObject;
+            typeB.ofType(type);
+        } else {
+            assert false;
+        }
+
+        this.previousObject = this.objectStack.pop();
+        return null;
+    }
+
+    @Override
+    public Void visitNamedType(NamedTypeContext ctx) {
+        String name = ctx.getText();
         this.previousObject = this.typeRegistry.registerUsage(name);
-        return super.visitTypeName(ctx);
+        return null;
     }
 
     @Override

@@ -146,11 +146,11 @@ public final class PrettyPrinter {
     private void visitObject(ObjectType type, int tabs) {
         appendTabs(tabs);
 
-        List<Type> interfaces = type.getInterfaces();
+        List<String> interfaces = type.getInterfaces();
         if (interfaces.isEmpty()) {
             stringBuilder.append(String.format("type %s {\n", type.getName()));
         } else {
-            String implementsString = interfaces.stream().map(interfaceType -> interfaceType.getName()).collect(Collectors.joining(", "));
+            String implementsString = interfaces.stream().collect(Collectors.joining(", "));
             stringBuilder.append(String.format("type %s : %s {\n", type.getName(), implementsString));
         }
 
@@ -211,7 +211,7 @@ public final class PrettyPrinter {
             stringBuilder.append(')');
         }
         stringBuilder.append(": ");
-        stringBuilder.append(field.getType().getName());
+        stringBuilder.append(field.getType());
 
     }
 

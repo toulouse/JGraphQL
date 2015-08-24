@@ -1,19 +1,19 @@
 interface Foo {
-	name: String
+    name: String
 }
 
 interface Bar {
-	name: String
-	description: String
+    name: String
+    description: String
 }
 
 type Baz : Foo, Bar {
-	name: String
-	description: String!
-	type: String
-	whatever(parameter : String = "somestuff", parameter2 : Boolean = false): String
-	floatTest(aFloat : Float = 9.0e34): String
-	arrayNonNullTest: [String!]!
+    name: String
+    description: String!
+    type: String
+    whatever(parameter : String = "somestuff", parameter2 : Boolean = false): String
+    floatTest(aFloat : Float = 9.0e34): String
+    arrayNonNullTest: [String!]!
 }
 
 scalar SomeScalar
@@ -21,12 +21,12 @@ scalar SomeScalar
 union FooOrBazOrSomeScalar = Foo | Baz | SomeScalar
 
 enum SomeEnum {
-	A1, B2, C3
-	D4, E5,
-	F6
+    A1, B2, C3
+    D4, E5,
+    F6
 }
 
 input SomeInput {
-	name: Float = 3.0e9 
-	description: Int = 30
+    name: Float = 3.0e9 
+    description: Int = 30
 }
