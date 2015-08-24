@@ -36,7 +36,6 @@ public class SchemaParser {
         GraphQLSchemaVisitor listener = new GraphQLSchemaVisitor();
         listener.visit(parser.schemaDocument());
         Schema.Builder schemaB = listener.getSchemaBuilder();
-        // do a possibleTypes sweep
         // TODO: validation
         return schemaB.build();
     }
