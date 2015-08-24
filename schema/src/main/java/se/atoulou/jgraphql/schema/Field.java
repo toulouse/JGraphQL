@@ -4,22 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.annotations.NotNull;
-
 public class Field {
-    private final @NotNull String                    name;
-    private final String                             description;
-    private final @NotNull List<@NotNull InputValue> args;
-    private final @NotNull String                    type;
-    private final @NotNull Boolean                   isDeprecated;
-    private final String                             deprecationReason;
+    private final String           name;
+    private final String           description;
+    private final List<InputValue> args;
+    private final String           type;
+    private final Boolean          isDeprecated;
+    private final String           deprecationReason;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    protected Field(@NotNull String name, String description, @NotNull List<@NotNull InputValue> args, @NotNull String type, @NotNull Boolean isDeprecated,
-            String deprecationReason) {
+    protected Field(String name, String description, List<InputValue> args, String type, Boolean isDeprecated, String deprecationReason) {
         super();
         this.name = name;
         this.description = description;

@@ -4,19 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.annotations.NotNull;
-
 public class Schema {
-    private final @NotNull List<@NotNull Type>      types;
-    private final @NotNull Type                     queryType;
-    private final Type                              mutationType;
-    private final @NotNull List<@NotNull Directive> directives;
+    private final List<Type>      types;
+    private final Type            queryType;
+    private final Type            mutationType;
+    private final List<Directive> directives;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    protected Schema(@NotNull List<@NotNull Type> types, @NotNull Type queryType, Type mutationType, @NotNull List<@NotNull Directive> directives) {
+    protected Schema(List<Type> types, Type queryType, Type mutationType, List<Directive> directives) {
         super();
         this.types = types;
         this.queryType = queryType;

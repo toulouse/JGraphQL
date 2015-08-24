@@ -1,18 +1,16 @@
 package se.atoulou.jgraphql.schema;
 
-import se.atoulou.jgraphql.annotations.NotNull;
-
 public class EnumValue {
-    private final @NotNull String  name;
-    private final String           description;
-    private final @NotNull Boolean isDeprecated;
-    private final String           deprecationReason;
+    private final String  name;
+    private final String  description;
+    private final Boolean isDeprecated;
+    private final String  deprecationReason;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    protected EnumValue(@NotNull String name, String description, @NotNull Boolean isDeprecated, String deprecationReason) {
+    protected EnumValue(String name, String description, Boolean isDeprecated, String deprecationReason) {
         super();
         this.name = name;
         this.description = description;

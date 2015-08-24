@@ -1,18 +1,16 @@
 package se.atoulou.jgraphql.schema;
 
-import se.atoulou.jgraphql.annotations.NotNull;
-
 public class InputValue {
-    private final @NotNull String name;
-    private final String          description;
-    private final @NotNull Type   type;
-    private final String          defaultValue;
+    private final String name;
+    private final String description;
+    private final Type   type;
+    private final String defaultValue;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    protected InputValue(@NotNull String name, String description, @NotNull Type type, String defaultValue) {
+    protected InputValue(String name, String description, Type type, String defaultValue) {
         super();
         this.name = name;
         this.description = description;

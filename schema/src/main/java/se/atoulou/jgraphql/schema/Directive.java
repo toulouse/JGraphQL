@@ -3,22 +3,19 @@ package se.atoulou.jgraphql.schema;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.atoulou.jgraphql.annotations.NotNull;
-
 public class Directive {
-    private final @NotNull String                    name;
-    private final String                             description;
-    private final @NotNull List<@NotNull InputValue> args;
-    private final @NotNull Boolean                   onOperation;
-    private final @NotNull Boolean                   onFragment;
-    private final @NotNull Boolean                   onField;
+    private final String           name;
+    private final String           description;
+    private final List<InputValue> args;
+    private final Boolean          onOperation;
+    private final Boolean          onFragment;
+    private final Boolean          onField;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    protected Directive(@NotNull String name, String description, @NotNull List<@NotNull InputValue> args, @NotNull Boolean onOperation,
-            @NotNull Boolean onFragment, @NotNull Boolean onField) {
+    protected Directive(String name, String description, List<InputValue> args, Boolean onOperation, Boolean onFragment, Boolean onField) {
         super();
         this.name = name;
         this.description = description;

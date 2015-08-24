@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.annotations.NotNull;
-
 public class Type {
     public static enum TypeKind {
         SCALAR,
@@ -18,9 +16,9 @@ public class Type {
         NON_NULL,
     }
 
-    private final @NotNull TypeKind kind;
-    private final String            name;
-    private final String            description;
+    private final TypeKind kind;
+    private final String   name;
+    private final String   description;
 
     public static Builder builder() {
         return new Builder();
@@ -46,14 +44,14 @@ public class Type {
     }
 
     public static class EnumType extends Type {
-        private final List<@NotNull EnumValue> enumValues;
+        private final List<EnumValue> enumValues;
 
-        public EnumType(TypeKind kind, String name, String description, List<@NotNull EnumValue> enumValues) {
+        public EnumType(TypeKind kind, String name, String description, List<EnumValue> enumValues) {
             super(kind, name, description);
             this.enumValues = enumValues;
         }
 
-        public List<@NotNull EnumValue> getEnumValues() {
+        public List<EnumValue> getEnumValues() {
             return enumValues;
         }
 
@@ -65,20 +63,20 @@ public class Type {
     }
 
     public static class InterfaceType extends Type {
-        private final List<@NotNull Field>  fields;
-        private final List<@NotNull String> possibleTypes;
+        private final List<Field>  fields;
+        private final List<String> possibleTypes;
 
-        public InterfaceType(TypeKind kind, String name, String description, List<@NotNull Field> fields, List<@NotNull String> possibleTypes) {
+        public InterfaceType(TypeKind kind, String name, String description, List<Field> fields, List<String> possibleTypes) {
             super(kind, name, description);
             this.fields = fields;
             this.possibleTypes = possibleTypes;
         }
 
-        public List<@NotNull Field> getFields() {
+        public List<Field> getFields() {
             return fields;
         }
 
-        public List<@NotNull String> getPossibleTypes() {
+        public List<String> getPossibleTypes() {
             return possibleTypes;
         }
 
@@ -90,14 +88,14 @@ public class Type {
     }
 
     public static class InputObjectType extends Type {
-        private final List<@NotNull InputValue> inputFields;
+        private final List<InputValue> inputFields;
 
-        public InputObjectType(TypeKind kind, String name, String description, List<@NotNull InputValue> inputFields) {
+        public InputObjectType(TypeKind kind, String name, String description, List<InputValue> inputFields) {
             super(kind, name, description);
             this.inputFields = inputFields;
         }
 
-        public List<@NotNull InputValue> getInputFields() {
+        public List<InputValue> getInputFields() {
             return inputFields;
         }
 
@@ -145,20 +143,20 @@ public class Type {
     }
 
     public static class ObjectType extends Type {
-        private final List<@NotNull Field>  fields;
-        private final List<@NotNull String> interfaces;
+        private final List<Field>  fields;
+        private final List<String> interfaces;
 
-        public ObjectType(TypeKind kind, String name, String description, List<@NotNull Field> fields, List<@NotNull String> interfaces) {
+        public ObjectType(TypeKind kind, String name, String description, List<Field> fields, List<String> interfaces) {
             super(kind, name, description);
             this.fields = fields;
             this.interfaces = interfaces;
         }
 
-        public List<@NotNull Field> getFields() {
+        public List<Field> getFields() {
             return fields;
         }
 
-        public List<@NotNull String> getInterfaces() {
+        public List<String> getInterfaces() {
             return interfaces;
         }
 
@@ -181,14 +179,14 @@ public class Type {
     }
 
     public static class UnionType extends Type {
-        private final List<@NotNull Type> possibleTypes;
+        private final List<Type> possibleTypes;
 
-        public UnionType(TypeKind kind, String name, String description, List<@NotNull Type> possibleTypes) {
+        public UnionType(TypeKind kind, String name, String description, List<Type> possibleTypes) {
             super(kind, name, description);
             this.possibleTypes = possibleTypes;
         }
 
-        public List<@NotNull Type> getPossibleTypes() {
+        public List<Type> getPossibleTypes() {
             return possibleTypes;
         }
 
