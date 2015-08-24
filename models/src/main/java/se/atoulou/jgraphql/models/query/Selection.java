@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.models.schema.Directive;
-
 public abstract class Selection {
     public static enum SelectionKind {
         FIELD,

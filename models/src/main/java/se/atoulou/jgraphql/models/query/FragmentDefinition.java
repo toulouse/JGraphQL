@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.models.schema.Directive;
-
 public class FragmentDefinition {
     private final String          name;
     private final String          typeCondition;
