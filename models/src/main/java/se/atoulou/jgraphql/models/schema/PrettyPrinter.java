@@ -1,14 +1,14 @@
-package se.atoulou.jgraphql.schema;
+package se.atoulou.jgraphql.models.schema;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.schema.Type.EnumType;
-import se.atoulou.jgraphql.schema.Type.InputObjectType;
-import se.atoulou.jgraphql.schema.Type.InterfaceType;
-import se.atoulou.jgraphql.schema.Type.ObjectType;
-import se.atoulou.jgraphql.schema.Type.ScalarType;
-import se.atoulou.jgraphql.schema.Type.UnionType;
+import se.atoulou.jgraphql.models.schema.Type.EnumType;
+import se.atoulou.jgraphql.models.schema.Type.InputObjectType;
+import se.atoulou.jgraphql.models.schema.Type.InterfaceType;
+import se.atoulou.jgraphql.models.schema.Type.ObjectType;
+import se.atoulou.jgraphql.models.schema.Type.ScalarType;
+import se.atoulou.jgraphql.models.schema.Type.UnionType;
 
 public final class PrettyPrinter {
 

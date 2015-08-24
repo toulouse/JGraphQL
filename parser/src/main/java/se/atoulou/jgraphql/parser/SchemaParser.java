@@ -7,9 +7,9 @@ import java.io.Reader;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import se.atoulou.jgraphql.models.schema.Schema;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaLexer;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser;
-import se.atoulou.jgraphql.schema.Schema;
 
 public class SchemaParser {
     public Schema parse(char[] data, int numberOfActualCharsInArray) {

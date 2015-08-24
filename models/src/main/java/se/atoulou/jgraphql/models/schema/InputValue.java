@@ -1,4 +1,4 @@
-package se.atoulou.jgraphql.schema;
+package se.atoulou.jgraphql.models.schema;
 
 public class InputValue {
     private final String name;

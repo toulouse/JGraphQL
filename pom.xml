@@ -63,7 +63,7 @@
 
 	<modules>
 		<module>parser</module>
-		<module>schema</module>
+		<module>models</module>
 	</modules>
 	<repositories>
 		<repository>

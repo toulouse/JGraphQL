@@ -7,6 +7,12 @@ import java.util.Stack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.atoulou.jgraphql.models.schema.EnumValue;
+import se.atoulou.jgraphql.models.schema.Field;
+import se.atoulou.jgraphql.models.schema.InputValue;
+import se.atoulou.jgraphql.models.schema.Schema;
+import se.atoulou.jgraphql.models.schema.Type;
+import se.atoulou.jgraphql.models.schema.Type.TypeKind;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaBaseVisitor;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.ArgumentsDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.DefaultValueContext;
@@ -25,12 +31,6 @@ import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.TypeDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.UnionDefinitionContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser.UnionMembersContext;
-import se.atoulou.jgraphql.schema.EnumValue;
-import se.atoulou.jgraphql.schema.Field;
-import se.atoulou.jgraphql.schema.InputValue;
-import se.atoulou.jgraphql.schema.Schema;
-import se.atoulou.jgraphql.schema.Type;
-import se.atoulou.jgraphql.schema.Type.TypeKind;
 
 public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
     private static final Logger LOG = LoggerFactory.getLogger(GraphQLSchemaVisitor.class);

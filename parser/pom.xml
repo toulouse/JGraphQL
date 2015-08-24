@@ -50,7 +50,7 @@
 		</dependency>
 		<dependency>
 			<groupId>se.atoulou.jgraphql</groupId>
-			<artifactId>schema</artifactId>
+			<artifactId>models</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

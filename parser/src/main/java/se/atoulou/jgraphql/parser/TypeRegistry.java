@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.schema.Type;
-import se.atoulou.jgraphql.schema.Type.Builder;
-import se.atoulou.jgraphql.schema.Type.TypeKind;
+import se.atoulou.jgraphql.models.schema.Type;
+import se.atoulou.jgraphql.models.schema.Type.TypeKind;
 
 public class TypeRegistry {
     protected Map<String, Type.Builder> types;
@@ -47,7 +46,7 @@ public class TypeRegistry {
 
         for (Type.Builder typeB : objects) {
             List<Type.Builder> implementedTypes = typeB.interfaces();
-            for (Builder implementedType : implementedTypes) {
+            for (Type.Builder implementedType : implementedTypes) {
                 assert implementedType.kind() == TypeKind.INTERFACE;
                 if (!implementedType.possibleTypes().contains(typeB)) {
                     implementedType.possibleTypes().add(typeB);

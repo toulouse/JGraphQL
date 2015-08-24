@@ -9,10 +9,10 @@ import org.antlr.v4.runtime.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import se.atoulou.jgraphql.models.schema.PrettyPrinter;
+import se.atoulou.jgraphql.models.schema.Schema;
 import se.atoulou.jgraphql.parser.SchemaParser;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaLexer;
-import se.atoulou.jgraphql.schema.PrettyPrinter;
-import se.atoulou.jgraphql.schema.Schema;
 
 public class Test {
 
