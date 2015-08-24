@@ -145,10 +145,10 @@ public class Type {
     }
 
     public static class ObjectType extends Type {
-        private final List<@NotNull Field> fields;
-        private final List<@NotNull Type>  interfaces;
+        private final List<@NotNull Field>  fields;
+        private final List<@NotNull String> interfaces;
 
-        public ObjectType(TypeKind kind, String name, String description, List<@NotNull Field> fields, List<@NotNull Type> interfaces) {
+        public ObjectType(TypeKind kind, String name, String description, List<@NotNull Field> fields, List<@NotNull String> interfaces) {
             super(kind, name, description);
             this.fields = fields;
             this.interfaces = interfaces;
@@ -158,7 +158,7 @@ public class Type {
             return fields;
         }
 
-        public List<@NotNull Type> getInterfaces() {
+        public List<@NotNull String> getInterfaces() {
             return interfaces;
         }
 
@@ -231,7 +231,7 @@ public class Type {
                 return cachedBuild;
             case OBJECT: {
                 List<Field> fields = this.fields.stream().map(builder -> builder.build()).collect(Collectors.toList());
-                List<Type> interfaces = this.interfaces.stream().map(builder -> builder.build()).collect(Collectors.toList());
+                List<String> interfaces = this.interfaces.stream().map(builder -> builder.name()).collect(Collectors.toList());
                 cachedBuild = new ObjectType(kind, name, description, fields, interfaces);
                 return cachedBuild;
             }

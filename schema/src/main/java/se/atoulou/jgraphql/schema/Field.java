@@ -10,7 +10,7 @@ public class Field {
     private final @NotNull String                    name;
     private final String                             description;
     private final @NotNull List<@NotNull InputValue> args;
-    private final @NotNull Type                      type;
+    private final @NotNull String                    type;
     private final @NotNull Boolean                   isDeprecated;
     private final String                             deprecationReason;
 
@@ -18,7 +18,7 @@ public class Field {
         return new Builder();
     }
 
-    protected Field(@NotNull String name, String description, @NotNull List<@NotNull InputValue> args, @NotNull Type type, @NotNull Boolean isDeprecated,
+    protected Field(@NotNull String name, String description, @NotNull List<@NotNull InputValue> args, @NotNull String type, @NotNull Boolean isDeprecated,
             String deprecationReason) {
         super();
         this.name = name;
@@ -41,7 +41,7 @@ public class Field {
         return args;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
@@ -67,8 +67,7 @@ public class Field {
 
         public Field build() {
             List<InputValue> args = this.args.stream().map(builder -> builder.build()).collect(Collectors.toList());
-            Type type = this.type.build();
-            return new Field(name, description, args, type, isDeprecated, deprecationReason);
+            return new Field(name, description, args, type.name(), isDeprecated, deprecationReason);
         }
 
         public String name() {

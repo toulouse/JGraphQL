@@ -88,11 +88,13 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         this.objectStack.push(typeB);
         this.schemaBuilder.types().add(typeB);
 
-        for (NamedTypeContext typeName : ctx.implementTypes().namedType()) {
-            String typeNameString = typeName.NAME().getText();
-            Type.Builder implementedTypeB = this.typeRegistry.registerUsage(typeNameString);
-            typeB.interfaces().add(implementedTypeB);
-            LOG.trace("<Implements name=\"{}\" />", typeNameString);
+        if (ctx.implementTypes() != null) {
+            for (NamedTypeContext typeName : ctx.implementTypes().namedType()) {
+                String typeNameString = typeName.NAME().getText();
+                Type.Builder implementedTypeB = this.typeRegistry.registerUsage(typeNameString);
+                typeB.interfaces().add(implementedTypeB);
+                LOG.trace("<Implements name=\"{}\" />", typeNameString);
+            }
         }
 
         for (FieldDefinitionContext fieldDefinition : ctx.fieldDefinition()) {
@@ -284,9 +286,9 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
         if (defaultValue != null) {
             String constValue = defaultValue.constValue().getText();
             inputValueB.defaultValue(constValue);
+            LOG.trace("<DefaultValue value=\"{}\" />", defaultValue.getText());
         }
         LOG.trace("<Type name=\"{}\" />", type.name());
-        LOG.trace("<DefaultValue value=\"{}\" />", defaultValue.getText());
 
         this.previousObject = this.objectStack.pop();
         LOG.trace("</InputValue>");
