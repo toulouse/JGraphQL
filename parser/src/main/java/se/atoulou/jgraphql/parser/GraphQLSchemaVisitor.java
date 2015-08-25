@@ -41,8 +41,6 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
     private Object               previousObject;
 
     public GraphQLSchemaVisitor() {
-        super();
-
         this.schemaBuilder = Schema.builder();
 
         // Add type registry; register base types

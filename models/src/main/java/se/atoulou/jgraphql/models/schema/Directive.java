@@ -2,6 +2,7 @@ package se.atoulou.jgraphql.models.schema;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Directive {
     private final String           name;
@@ -16,7 +17,6 @@ public class Directive {
     }
 
     protected Directive(String name, String description, List<InputValue> args, Boolean onOperation, Boolean onFragment, Boolean onField) {
-        super();
         this.name = name;
         this.description = description;
         this.args = args;
@@ -50,18 +50,19 @@ public class Directive {
     }
 
     public static class Builder {
-        private String           name;
-        private String           description;
-        private List<InputValue> args;
-        private Boolean          onOperation;
-        private Boolean          onFragment;
-        private Boolean          onField;
+        private String                   name;
+        private String                   description;
+        private List<InputValue.Builder> args;
+        private Boolean                  onOperation;
+        private Boolean                  onFragment;
+        private Boolean                  onField;
 
         protected Builder() {
             args = new ArrayList<>();
         }
 
         public Directive build() {
+            List<InputValue> args = this.args.stream().map(builder -> builder.build()).collect(Collectors.toList());
             return new Directive(name, description, args, onOperation, onFragment, onField);
         }
 
@@ -75,7 +76,7 @@ public class Directive {
             return this;
         }
 
-        public Builder args(List<InputValue> args) {
+        public Builder args(List<InputValue.Builder> args) {
             this.args = args;
             return this;
         }
