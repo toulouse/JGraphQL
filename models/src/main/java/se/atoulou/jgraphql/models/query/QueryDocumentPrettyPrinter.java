@@ -1,14 +1,8 @@
-package se.atoulou.jgraphql.models;
+package se.atoulou.jgraphql.models.query;
 
 import java.util.List;
 
-import se.atoulou.jgraphql.models.query.Argument;
-import se.atoulou.jgraphql.models.query.Directive;
-import se.atoulou.jgraphql.models.query.FragmentDefinition;
-import se.atoulou.jgraphql.models.query.OperationDefinition;
-import se.atoulou.jgraphql.models.query.QueryDocument;
-import se.atoulou.jgraphql.models.query.Selection;
-import se.atoulou.jgraphql.models.query.VariableDefinition;
+import se.atoulou.jgraphql.models.QueryDocumentMessageWriter;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
 import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
 
