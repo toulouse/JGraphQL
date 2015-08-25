@@ -4,7 +4,7 @@
 
 	<groupId>se.atoulou.jgraphql</groupId>
 	<artifactId>jgraphql</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>JGraphQL</name>
@@ -20,7 +20,7 @@
 		<url>https://github.com/JGraphQL/JGraphQL</url>
 		<connection>scm:git:git://github.com/JGraphQL/JGraphQL.git</connection>
 		<developerConnection>scm:git:git@github.com:JGraphQL/JGraphQL.git</developerConnection>
-		<tag>jgraphql-0.0.3</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
