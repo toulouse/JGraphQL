@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import se.atoulou.jgraphql.models.SchemaMessageWriter;
+import se.atoulou.jgraphql.models.StringBuilderVisitorContext;
 import se.atoulou.jgraphql.models.schema.Type.EnumType;
 import se.atoulou.jgraphql.models.schema.Type.InputObjectType;
 import se.atoulou.jgraphql.models.schema.Type.InterfaceType;
@@ -11,14 +12,14 @@ import se.atoulou.jgraphql.models.schema.Type.ObjectType;
 import se.atoulou.jgraphql.models.schema.Type.ScalarType;
 import se.atoulou.jgraphql.models.schema.Type.UnionType;
 
-public final class SchemaPrettyPrinter implements SchemaMessageWriter<String> {
+public final class SchemaPrettyPrinter implements SchemaMessageWriter<String>, SchemaVisitor<StringBuilderVisitorContext> {
     protected final int tabWidth;
 
     @Override
     public String writeSchema(Schema schema) {
-        StringBuilder stringBuilder = new StringBuilder();
-        visitRoot(schema, stringBuilder);
-        return stringBuilder.toString();
+        StringBuilderVisitorContext context = new StringBuilderVisitorContext();
+        visitSchema(schema, context);
+        return context.getStringBuilder().toString();
     }
 
     public SchemaPrettyPrinter() {
@@ -36,189 +37,171 @@ public final class SchemaPrettyPrinter implements SchemaMessageWriter<String> {
         }
     }
 
-    private void visitRoot(Schema model, StringBuilder stringBuilder) {
-        visitSchema(model, stringBuilder, 0);
+    @Override
+    public void visitSchema(Schema schema, StringBuilderVisitorContext context) {
+        context.setPunctuator(ctx -> {
+            ctx.getStringBuilder().append("\n\n");
+        });
+        SchemaVisitor.super.visitSchema(schema, context);
     }
 
-    private void visitSchema(Schema schema, StringBuilder stringBuilder, int tabs) {
-        boolean first = true;
-        for (Type type : schema.getTypes()) {
-            if (!first) {
-                stringBuilder.append('\n');
-                stringBuilder.append('\n');
-            } else {
-                first = false;
-            }
+    @Override
+    public void visitEnum(EnumType enumType, StringBuilderVisitorContext context) {
+        StringBuilder stringBuilder = context.getStringBuilder();
 
-            visitType(stringBuilder, type, tabs);
-        }
-    }
+        appendTabs(stringBuilder, context.currentLevel());
+        stringBuilder.append(String.format("enum %s {\n", enumType.getName()));
 
-    private void visitType(StringBuilder stringBuilder, Type type, int tabs) {
-        switch (type.getKind()) {
-        case ENUM:
-            visitEnum(stringBuilder, (EnumType) type, tabs);
-            break;
-        case INPUT_OBJECT:
-            visitInputObject(stringBuilder, (InputObjectType) type, tabs);
-            break;
-        case INTERFACE:
-            visitInterface(stringBuilder, (InterfaceType) type, tabs);
-            break;
-        case LIST:
-            assert false;
-            break;
-        case NON_NULL:
-            assert false;
-            break;
-        case OBJECT:
-            visitObject(stringBuilder, (ObjectType) type, tabs);
-            break;
-        case SCALAR:
-            visitScalar(stringBuilder, (ScalarType) type, tabs);
-            break;
-        case UNION:
-            visitUnion(stringBuilder, (UnionType) type, tabs);
-            break;
-        default:
-            break;
+        context.setPunctuator(ctx -> {
+            ctx.getStringBuilder().append(",\n");
+            appendTabs(stringBuilder, ctx.currentLevel());
+        });
 
-        }
-    }
+        appendTabs(stringBuilder, context.currentLevel() + 1);
+        SchemaVisitor.super.visitEnum(enumType, context);
 
-    private void visitEnum(StringBuilder stringBuilder, EnumType type, int tabs) {
-        appendTabs(stringBuilder, tabs);
-        stringBuilder.append(String.format("enum %s {\n", type.getName()));
-
-        boolean first = true;
-        for (EnumValue enumValue : type.getEnumValues()) {
-            if (!first) {
-                stringBuilder.append(',');
-                stringBuilder.append('\n');
-            } else {
-                first = false;
-            }
-
-            appendTabs(stringBuilder, tabs + 1);
-            stringBuilder.append(enumValue.getName());
-        }
         stringBuilder.append('\n');
 
-        appendTabs(stringBuilder, tabs);
+        appendTabs(stringBuilder, context.currentLevel());
         stringBuilder.append('}');
     }
 
-    private void visitInputObject(StringBuilder stringBuilder, InputObjectType type, int tabs) {
-        appendTabs(stringBuilder, tabs);
-        stringBuilder.append(String.format("input %s {\n", type.getName()));
+    @Override
+    public void visitEnumValue(EnumValue enumValue, StringBuilderVisitorContext context) {
+        context.getStringBuilder().append(enumValue.getName());
+    }
 
-        boolean first = true;
-        for (InputValue inputValue : type.getInputFields()) {
-            if (!first) {
-                stringBuilder.append(',');
-                stringBuilder.append('\n');
-            } else {
-                first = false;
-            }
+    @Override
+    public void visitInputObject(InputObjectType inputObjectType, StringBuilderVisitorContext context) {
+        StringBuilder stringBuilder = context.getStringBuilder();
 
-            appendTabs(stringBuilder, tabs + 1);
-            visitInputValue(stringBuilder, inputValue);
-        }
+        appendTabs(stringBuilder, context.currentLevel());
+        stringBuilder.append(String.format("input %s {\n", inputObjectType.getName()));
+
+        context.setPunctuator(ctx -> {
+            ctx.getStringBuilder().append(",\n");
+            appendTabs(ctx.getStringBuilder(), ctx.currentLevel() - 1);
+        });
+
+        appendTabs(stringBuilder, context.currentLevel());
+        SchemaVisitor.super.visitInputObject(inputObjectType, context);
+
         stringBuilder.append('\n');
-
-        appendTabs(stringBuilder, tabs);
+        appendTabs(stringBuilder, context.currentLevel());
         stringBuilder.append('}');
     }
 
-    private void visitInterface(StringBuilder stringBuilder, InterfaceType type, int tabs) {
-        appendTabs(stringBuilder, tabs);
-        stringBuilder.append(String.format("interface %s {\n", type.getName()));
+    @Override
+    public void visitInterface(InterfaceType interfaceType, StringBuilderVisitorContext context) {
+        StringBuilder stringBuilder = context.getStringBuilder();
 
-        boolean first = true;
-        for (Field field : type.getFields()) {
-            if (!first) {
-                stringBuilder.append(',');
-                stringBuilder.append('\n');
-            } else {
-                first = false;
-            }
+        appendTabs(stringBuilder, context.currentLevel());
+        stringBuilder.append(String.format("interface %s {\n", interfaceType.getName()));
 
-            visitField(stringBuilder, field, tabs + 1);
-        }
+        context.setPunctuator(ctx -> {
+            ctx.getStringBuilder().append(",\n");
+            appendTabs(ctx.getStringBuilder(), ctx.currentLevel() - 1);
+        });
+
+        appendTabs(stringBuilder, context.currentLevel());
+        SchemaVisitor.super.visitInterface(interfaceType, context);
+
         stringBuilder.append('\n');
-
-        appendTabs(stringBuilder, tabs);
+        appendTabs(stringBuilder, context.currentLevel());
         stringBuilder.append('}');
     }
 
-    private void visitObject(StringBuilder stringBuilder, ObjectType type, int tabs) {
-        appendTabs(stringBuilder, tabs);
+    @Override
+    public void visitObject(ObjectType objectType, StringBuilderVisitorContext context) {
+        StringBuilder stringBuilder = context.getStringBuilder();
 
-        List<String> interfaces = type.getInterfaces();
+        appendTabs(stringBuilder, context.currentLevel());
+
+        List<String> interfaces = objectType.getInterfaces();
         if (interfaces.isEmpty()) {
-            stringBuilder.append(String.format("type %s {\n", type.getName()));
+            stringBuilder.append(String.format("type %s {\n", objectType.getName()));
         } else {
             String implementsString = interfaces.stream().collect(Collectors.joining(", "));
-            stringBuilder.append(String.format("type %s : %s {\n", type.getName(), implementsString));
+            stringBuilder.append(String.format("type %s : %s {\n", objectType.getName(), implementsString));
         }
 
-        boolean first = true;
-        for (Field field : type.getFields()) {
-            if (!first) {
-                stringBuilder.append(",\n");
-            } else {
-                first = false;
-            }
+        context.setPunctuator(ctx -> {
+            ctx.getStringBuilder().append(",\n");
+            appendTabs(ctx.getStringBuilder(), ctx.currentLevel() - 1);
+        });
 
-            visitField(stringBuilder, field, tabs + 1);
-        }
+        appendTabs(stringBuilder, context.currentLevel());
+        SchemaVisitor.super.visitObject(objectType, context);
+
         stringBuilder.append('\n');
-
-        appendTabs(stringBuilder, tabs);
+        appendTabs(stringBuilder, context.currentLevel());
         stringBuilder.append('}');
     }
 
-    private void visitScalar(StringBuilder stringBuilder, ScalarType type, int tabs) {
-        appendTabs(stringBuilder, tabs);
-        stringBuilder.append(String.format("scalar %s", type.getName()));
+    @Override
+    public void visitScalar(ScalarType scalarType, StringBuilderVisitorContext context) {
+        StringBuilder stringBuilder = context.getStringBuilder();
+        appendTabs(stringBuilder, context.currentLevel());
+        stringBuilder.append(String.format("scalar %s", scalarType.getName()));
     }
 
-    private void visitUnion(StringBuilder stringBuilder, UnionType type, int tabs) {
-        appendTabs(stringBuilder, tabs);
-        String types = type.getPossibleTypes().stream().map(possibleType -> possibleType.getName()).collect(Collectors.joining(" | "));
-        stringBuilder.append(String.format("union %s = %s", type.getName(), types));
+    @Override
+    public void visitUnion(UnionType unionType, StringBuilderVisitorContext context) {
+        StringBuilder stringBuilder = context.getStringBuilder();
+
+        appendTabs(stringBuilder, context.currentLevel());
+        stringBuilder.append(String.format("union %s = ", unionType.getName()));
+
+        // Visit manually: don't want to dump definition
+        // TODO: reconsider API for this
+        context.setPunctuator(ctx -> {
+            ctx.getStringBuilder().append(" | ");
+        });
+        context.enter();
+        for (Type type : unionType.getPossibleTypes()) {
+            context.incrementIndex();
+            stringBuilder.append(type.getName());
+        }
+        context.leave();
     }
 
-    private void visitInputValue(StringBuilder stringBuilder, InputValue inputValue) {
-        String inputValueString = String.format("%s: %s", inputValue.getName(), inputValue.getType().getName());
+    @Override
+    public void visitInputValue(InputValue inputValueType, StringBuilderVisitorContext context) {
+        StringBuilder stringBuilder = context.getStringBuilder();
+
+        String inputValueString = String.format("%s: %s", inputValueType.getName(), inputValueType.getType().getName());
         stringBuilder.append(inputValueString);
-        if (inputValue.getDefaultValue() != null) {
-            String defaultValueString = String.format(" = %s", inputValue.getDefaultValue());
+        if (inputValueType.getDefaultValue() != null) {
+            String defaultValueString = String.format(" = %s", inputValueType.getDefaultValue());
             stringBuilder.append(defaultValueString);
         }
     }
 
-    private void visitField(StringBuilder stringBuilder, Field field, int tabs) {
-        appendTabs(stringBuilder, tabs);
-        stringBuilder.append(field.getName());
+    @Override
+    public void visitField(Field fieldType, StringBuilderVisitorContext context) {
+        StringBuilder stringBuilder = context.getStringBuilder();
 
-        if (!field.getArguments().isEmpty()) {
+        appendTabs(stringBuilder, context.currentLevel());
+        stringBuilder.append(fieldType.getName());
+
+        // TODO: add prependers/appenders
+        if (!fieldType.getArguments().isEmpty()) {
             stringBuilder.append('(');
 
             boolean first = true;
-            for (InputValue inputValue : field.getArguments()) {
+            for (InputValue inputValue : fieldType.getArguments()) {
                 if (!first) {
                     stringBuilder.append(", ");
                 } else {
                     first = false;
                 }
 
-                visitInputValue(stringBuilder, inputValue);
+                visitInputValue(inputValue, context);
             }
 
             stringBuilder.append(')');
         }
         stringBuilder.append(": ");
-        stringBuilder.append(field.getType());
+        stringBuilder.append(fieldType.getType());
     }
 }
