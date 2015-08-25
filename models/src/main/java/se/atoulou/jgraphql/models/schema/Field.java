@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public class Field {
     private final String           name;
     private final String           description;
-    private final List<InputValue> args;
+    private final List<InputValue> arguments;
     private final String           type;
     private final Boolean          isDeprecated;
     private final String           deprecationReason;
@@ -16,11 +16,11 @@ public class Field {
         return new Builder();
     }
 
-    protected Field(String name, String description, List<InputValue> args, String type, Boolean isDeprecated, String deprecationReason) {
+    protected Field(String name, String description, List<InputValue> argumentss, String type, Boolean isDeprecated, String deprecationReason) {
         super();
         this.name = name;
         this.description = description;
-        this.args = args;
+        this.arguments = argumentss;
         this.type = type;
         this.isDeprecated = isDeprecated;
         this.deprecationReason = deprecationReason;
@@ -34,8 +34,8 @@ public class Field {
         return description;
     }
 
-    public List<InputValue> getArgs() {
-        return args;
+    public List<InputValue> getArguments() {
+        return arguments;
     }
 
     public String getType() {
@@ -53,18 +53,18 @@ public class Field {
     public static class Builder {
         private String                   name;
         private String                   description;
-        private List<InputValue.Builder> args;
+        private List<InputValue.Builder> arguments;
         private Type.Builder             type;
         private Boolean                  isDeprecated;
         private String                   deprecationReason;
 
         protected Builder() {
-            args = new ArrayList<>();
+            arguments = new ArrayList<>();
         }
 
         public Field build() {
-            List<InputValue> args = this.args.stream().map(builder -> builder.build()).collect(Collectors.toList());
-            return new Field(name, description, args, type.name(), isDeprecated, deprecationReason);
+            List<InputValue> arguments = this.arguments.stream().map(builder -> builder.build()).collect(Collectors.toList());
+            return new Field(name, description, arguments, type.name(), isDeprecated, deprecationReason);
         }
 
         public String name() {
@@ -85,12 +85,12 @@ public class Field {
             return this;
         }
 
-        public List<InputValue.Builder> args() {
-            return args;
+        public List<InputValue.Builder> arguments() {
+            return arguments;
         }
 
-        public Builder args(List<InputValue.Builder> args) {
-            this.args = args;
+        public Builder arguments(List<InputValue.Builder> arguments) {
+            this.arguments = arguments;
             return this;
         }
 
@@ -124,7 +124,7 @@ public class Field {
 
     @Override
     public String toString() {
-        return "Field [args=" + args + ", deprecationReason=" + deprecationReason + ", description=" + description + ", isDeprecated=" + isDeprecated
+        return "Field [arguments=" + arguments + ", deprecationReason=" + deprecationReason + ", description=" + description + ", isDeprecated=" + isDeprecated
                 + ", name=" + name + ", type=" + type + "]";
     }
 }

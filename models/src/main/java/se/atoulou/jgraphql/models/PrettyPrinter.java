@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
-import se.atoulou.jgraphql.models.query.Document;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
+import se.atoulou.jgraphql.models.query.QueryDocument;
 import se.atoulou.jgraphql.models.query.Selection;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
 import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
@@ -40,11 +40,11 @@ public abstract class PrettyPrinter<T> {
         return schemaPrinter(2);
     }
 
-    public static PrettyPrinter<Document> documentPrinter(int tabWidth) {
+    public static PrettyPrinter<QueryDocument> documentPrinter(int tabWidth) {
         return new DocumentPrettyPrinter(tabWidth);
     }
 
-    public static PrettyPrinter<Document> documentPrinter() {
+    public static PrettyPrinter<QueryDocument> documentPrinter() {
         return documentPrinter(2);
     }
 
@@ -236,11 +236,11 @@ public abstract class PrettyPrinter<T> {
             appendTabs(stringBuilder, tabs);
             stringBuilder.append(field.getName());
 
-            if (!field.getArgs().isEmpty()) {
+            if (!field.getArguments().isEmpty()) {
                 stringBuilder.append('(');
 
                 boolean first = true;
-                for (InputValue inputValue : field.getArgs()) {
+                for (InputValue inputValue : field.getArguments()) {
                     if (!first) {
                         stringBuilder.append(", ");
                     } else {
@@ -257,18 +257,18 @@ public abstract class PrettyPrinter<T> {
         }
     }
 
-    private static final class DocumentPrettyPrinter extends PrettyPrinter<Document> {
+    private static final class DocumentPrettyPrinter extends PrettyPrinter<QueryDocument> {
 
         protected DocumentPrettyPrinter(int tabWidth) {
             super(tabWidth);
         }
 
         @Override
-        protected void visitRoot(Document model, StringBuilder stringBuilder) {
+        protected void visitRoot(QueryDocument model, StringBuilder stringBuilder) {
             visitDocument(model, stringBuilder, 0);
         }
 
-        private void visitDocument(Document document, StringBuilder stringBuilder, int tabs) {
+        private void visitDocument(QueryDocument document, StringBuilder stringBuilder, int tabs) {
             boolean first = true;
             for (OperationDefinition operation : document.getOperations()) {
                 if (!first) {

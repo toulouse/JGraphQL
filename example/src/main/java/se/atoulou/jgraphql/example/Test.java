@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.atoulou.jgraphql.models.PrettyPrinter;
-import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.query.QueryDocument;
 import se.atoulou.jgraphql.parser.ParseHelper;
 import se.atoulou.jgraphql.parser.antlr.GraphQLQueryLexer;
 
@@ -30,7 +30,7 @@ public class Test {
         }
 
         in = Test.class.getResourceAsStream("/introspectionQuery.graphqlQuery");
-        Document document = ParseHelper.parseDocument(in);
+        QueryDocument document = ParseHelper.parseDocument(in);
         LOG.trace("Document: \n{}", PrettyPrinter.documentPrinter().print(document));
     }
 }

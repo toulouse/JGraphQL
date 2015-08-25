@@ -7,7 +7,7 @@ import java.io.Reader;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.query.QueryDocument;
 import se.atoulou.jgraphql.models.schema.Schema;
 import se.atoulou.jgraphql.parser.antlr.GraphQLQueryLexer;
 import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser;
@@ -43,30 +43,30 @@ public final class ParseHelper {
         return schemaB.build();
     }
 
-    public static Document parseDocument(char[] data, int numberOfActualCharsInArray) {
+    public static QueryDocument parseDocument(char[] data, int numberOfActualCharsInArray) {
         return parseDocument(new ANTLRInputStream(data, numberOfActualCharsInArray));
     }
 
-    public static Document parseDocument(String string) {
+    public static QueryDocument parseDocument(String string) {
         return parseDocument(new ANTLRInputStream(string));
     }
 
-    public static Document parseDocument(Reader r) throws IOException {
+    public static QueryDocument parseDocument(Reader r) throws IOException {
         return parseDocument(new ANTLRInputStream(r));
     }
 
-    public static Document parseDocument(InputStream in) throws IOException {
+    public static QueryDocument parseDocument(InputStream in) throws IOException {
         return parseDocument(new ANTLRInputStream(in));
     }
 
-    private static Document parseDocument(ANTLRInputStream input) {
+    private static QueryDocument parseDocument(ANTLRInputStream input) {
         GraphQLQueryLexer lexer = new GraphQLQueryLexer(input);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         GraphQLQueryParser parser = new GraphQLQueryParser(tokenStream);
 
         GraphQLQueryVisitor visitor = new GraphQLQueryVisitor();
         visitor.visit(parser.document());
-        Document.Builder documentB = visitor.getDocumentBuilder();
+        QueryDocument.Builder documentB = visitor.getDocumentBuilder();
         // TODO: validation
         return documentB.build();
     }
