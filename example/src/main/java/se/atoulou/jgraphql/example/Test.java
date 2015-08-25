@@ -30,7 +30,7 @@ public class Test {
         }
 
         in = Test.class.getResourceAsStream("/introspectionQuery.graphqlQuery");
-        Document document = new ParseHelper().parseDocument(in);
+        Document document = ParseHelper.parseDocument(in);
         LOG.trace("Document: \n{}", PrettyPrinter.documentPrinter().print(document));
     }
 }

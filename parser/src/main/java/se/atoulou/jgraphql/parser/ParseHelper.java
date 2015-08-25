@@ -14,24 +14,24 @@ import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaLexer;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser;
 
-public class ParseHelper {
-    public Schema parseSchema(char[] data, int numberOfActualCharsInArray) {
+public final class ParseHelper {
+    public static Schema parseSchema(char[] data, int numberOfActualCharsInArray) {
         return parseSchema(new ANTLRInputStream(data, numberOfActualCharsInArray));
     }
 
-    public Schema parseSchema(String string) {
+    public static Schema parseSchema(String string) {
         return parseSchema(new ANTLRInputStream(string));
     }
 
-    public Schema parseSchema(Reader r) throws IOException {
+    public static Schema parseSchema(Reader r) throws IOException {
         return parseSchema(new ANTLRInputStream(r));
     }
 
-    public Schema parseSchema(InputStream in) throws IOException {
+    public static Schema parseSchema(InputStream in) throws IOException {
         return parseSchema(new ANTLRInputStream(in));
     }
 
-    private Schema parseSchema(ANTLRInputStream input) {
+    private static Schema parseSchema(ANTLRInputStream input) {
         GraphQLSchemaLexer lexer = new GraphQLSchemaLexer(input);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         GraphQLSchemaParser parser = new GraphQLSchemaParser(tokenStream);
@@ -43,23 +43,23 @@ public class ParseHelper {
         return schemaB.build();
     }
 
-    public Document parseDocument(char[] data, int numberOfActualCharsInArray) {
+    public static Document parseDocument(char[] data, int numberOfActualCharsInArray) {
         return parseDocument(new ANTLRInputStream(data, numberOfActualCharsInArray));
     }
 
-    public Document parseDocument(String string) {
+    public static Document parseDocument(String string) {
         return parseDocument(new ANTLRInputStream(string));
     }
 
-    public Document parseDocument(Reader r) throws IOException {
+    public static Document parseDocument(Reader r) throws IOException {
         return parseDocument(new ANTLRInputStream(r));
     }
 
-    public Document parseDocument(InputStream in) throws IOException {
+    public static Document parseDocument(InputStream in) throws IOException {
         return parseDocument(new ANTLRInputStream(in));
     }
 
-    private Document parseDocument(ANTLRInputStream input) {
+    private static Document parseDocument(ANTLRInputStream input) {
         GraphQLQueryLexer lexer = new GraphQLQueryLexer(input);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         GraphQLQueryParser parser = new GraphQLQueryParser(tokenStream);
