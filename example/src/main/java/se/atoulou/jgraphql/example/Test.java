@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.atoulou.jgraphql.models.PrettyPrinter;
+import se.atoulou.jgraphql.models.QueryDocumentPrettyPrinter;
 import se.atoulou.jgraphql.models.query.QueryDocument;
 import se.atoulou.jgraphql.parser.ParseHelper;
 import se.atoulou.jgraphql.parser.antlr.GraphQLQueryLexer;
@@ -31,6 +31,6 @@ public class Test {
 
         in = Test.class.getResourceAsStream("/introspectionQuery.graphqlQuery");
         QueryDocument document = ParseHelper.parseDocument(in);
-        LOG.trace("Document: \n{}", PrettyPrinter.documentPrinter().print(document));
+        LOG.trace("Document: \n{}", new QueryDocumentPrettyPrinter().writeQueryDocument(document));
     }
 }
