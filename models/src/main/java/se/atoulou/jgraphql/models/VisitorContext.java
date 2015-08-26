@@ -3,23 +3,32 @@ package se.atoulou.jgraphql.models;
 import java.util.Stack;
 
 public class VisitorContext<T extends VisitorContext<?>> {
-    public static interface Punctuator<T extends VisitorContext<?>> {
-        public void punctuate(T context);
+    public static interface VisitPoint<T extends VisitorContext<?>> {
+        public void visit(T context);
     }
 
-    protected Stack<Integer>       indices;
-    protected Stack<Punctuator<T>> punctuators;
+    protected Stack<Integer> indices;
+
+    protected Stack<VisitPoint<T>> prologues;
+    protected Stack<VisitPoint<T>> itemSeparators;
+    protected Stack<VisitPoint<T>> epilogues;
 
     public VisitorContext() {
         indices = new Stack<>();
-        indices.push(-1);
 
-        punctuators = new Stack<>();
-        punctuators.push(null);
+        prologues = new Stack<>();
+        prologues.push(null);
+
+        itemSeparators = new Stack<>();
+        itemSeparators.push(null);
+        itemSeparators.push(null);
+
+        epilogues = new Stack<>();
+        epilogues.push(null);
     }
 
     public int currentLevel() {
-        return indices.size() - 2;
+        return indices.size();
     }
 
     public int currentIndex() {
@@ -31,32 +40,58 @@ public class VisitorContext<T extends VisitorContext<?>> {
         int newIndex = indices.pop().intValue() + 1;
         indices.push(newIndex);
 
-        if (newIndex <= 1) {
+        if (newIndex < 1) {
             return;
         }
 
-        // Get second to last punctuator, since null is always pushed on entering.
-        int punctuatorIndex = punctuators.size() - 2;
-        Punctuator<T> punctuator = punctuators.elementAt(punctuatorIndex);
-        if (punctuator != null) {
-            punctuator.punctuate((T) this);
+        // Get previous separator (since we always push one down)
+        VisitPoint<T> itemSeparator = itemSeparators.elementAt(currentLevel());
+        if (itemSeparator != null) {
+            itemSeparator.visit((T) this);
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void enter() {
-        indices.push(0);
-        punctuators.push(null);
+        prologues.push(null);
+        itemSeparators.push(null);
+        epilogues.push(null);
+
+        VisitPoint<T> prologue = prologues.elementAt(currentLevel());
+        if (prologue != null) {
+            prologue.visit((T) this);
+        }
+
+        indices.push(-1);
     }
 
+    @SuppressWarnings("unchecked")
     public void leave() {
         indices.pop();
-        punctuators.pop();
+
+        VisitPoint<T> epilogue = epilogues.elementAt(currentLevel());
+        if (epilogue != null) {
+            epilogue.visit((T) this);
+        }
+
+        setPrologue(null);
+        setItemSeparator(null);
+        setEpilogue(null);
+
+        prologues.pop();
+        itemSeparators.pop();
+        epilogues.pop();
     }
 
-    // Set the punctuator for the *next* level down
-    public void setPunctuator(Punctuator<T> punctuator) {
-        punctuators.pop();
-        punctuators.push(punctuator);
+    public void setPrologue(VisitPoint<T> prologue) {
+        prologues.set(currentLevel(), prologue);
     }
 
+    public void setItemSeparator(VisitPoint<T> itemSeparator) {
+        itemSeparators.set(currentLevel() + 1, itemSeparator);
+    }
+
+    public void setEpilogue(VisitPoint<T> epilogue) {
+        epilogues.set(currentLevel(), epilogue);
+    }
 }

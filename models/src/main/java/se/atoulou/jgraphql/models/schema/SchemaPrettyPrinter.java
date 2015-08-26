@@ -30,16 +30,24 @@ public final class SchemaPrettyPrinter implements SchemaMessageWriter<String>, S
         this.tabWidth = tabWidth;
     }
 
-    private void appendTabs(StringBuilder stringBuilder, int tabCount) {
-        int spaceCount = tabCount * tabWidth;
+    private void appendTabs(StringBuilderVisitorContext context) {
+        appendTabs(context, 0);
+    }
+
+    private void appendTabs(StringBuilderVisitorContext context, int offset) {
+        int spaceCount = (context.getTabs() + offset) * tabWidth;
         for (int i = 0; i < spaceCount; i++) {
-            stringBuilder.append(' ');
+            context.getStringBuilder().append(' ');
         }
     }
 
     @Override
     public void visitSchema(Schema schema, StringBuilderVisitorContext context) {
-        context.setPunctuator(ctx -> {
+        context.setPrologue(ctx -> {
+        });
+        context.setEpilogue(ctx -> {
+        });
+        context.setItemSeparator(ctx -> {
             ctx.getStringBuilder().append("\n\n");
         });
         SchemaVisitor.super.visitSchema(schema, context);
@@ -47,23 +55,28 @@ public final class SchemaPrettyPrinter implements SchemaMessageWriter<String>, S
 
     @Override
     public void visitEnum(EnumType enumType, StringBuilderVisitorContext context) {
-        StringBuilder stringBuilder = context.getStringBuilder();
+        context.setPrologue(ctx -> {
+            appendTabs(ctx);
+            ctx.getStringBuilder().append(String.format("enum %s {\n", enumType.getName()));
 
-        appendTabs(stringBuilder, context.currentLevel());
-        stringBuilder.append(String.format("enum %s {\n", enumType.getName()));
-
-        context.setPunctuator(ctx -> {
-            ctx.getStringBuilder().append(",\n");
-            appendTabs(stringBuilder, ctx.currentLevel());
+            ctx.indent();
+            appendTabs(ctx);
         });
 
-        appendTabs(stringBuilder, context.currentLevel() + 1);
+        context.setItemSeparator(ctx -> {
+            ctx.getStringBuilder().append(",\n");
+            appendTabs(ctx);
+        });
+
+        context.setEpilogue(ctx -> {
+            ctx.dedent();
+
+            ctx.getStringBuilder().append('\n');
+            appendTabs(ctx);
+            ctx.getStringBuilder().append('}');
+        });
+
         SchemaVisitor.super.visitEnum(enumType, context);
-
-        stringBuilder.append('\n');
-
-        appendTabs(stringBuilder, context.currentLevel());
-        stringBuilder.append('}');
     }
 
     @Override
@@ -73,94 +86,112 @@ public final class SchemaPrettyPrinter implements SchemaMessageWriter<String>, S
 
     @Override
     public void visitInputObject(InputObjectType inputObjectType, StringBuilderVisitorContext context) {
-        StringBuilder stringBuilder = context.getStringBuilder();
+        context.setPrologue(ctx -> {
+            appendTabs(ctx);
+            ctx.getStringBuilder().append(String.format("input %s {\n", inputObjectType.getName()));
 
-        appendTabs(stringBuilder, context.currentLevel());
-        stringBuilder.append(String.format("input %s {\n", inputObjectType.getName()));
-
-        context.setPunctuator(ctx -> {
-            ctx.getStringBuilder().append(",\n");
-            appendTabs(ctx.getStringBuilder(), ctx.currentLevel() - 1);
+            ctx.indent();
+            appendTabs(ctx);
         });
 
-        appendTabs(stringBuilder, context.currentLevel());
-        SchemaVisitor.super.visitInputObject(inputObjectType, context);
+        context.setItemSeparator(ctx -> {
+            ctx.getStringBuilder().append(",\n");
+            appendTabs(ctx);
+        });
 
-        stringBuilder.append('\n');
-        appendTabs(stringBuilder, context.currentLevel());
-        stringBuilder.append('}');
+        context.setEpilogue(ctx -> {
+            ctx.dedent();
+
+            ctx.getStringBuilder().append('\n');
+            appendTabs(ctx);
+            ctx.getStringBuilder().append('}');
+        });
+
+        SchemaVisitor.super.visitInputObject(inputObjectType, context);
     }
 
     @Override
     public void visitInterface(InterfaceType interfaceType, StringBuilderVisitorContext context) {
-        StringBuilder stringBuilder = context.getStringBuilder();
+        context.setPrologue(ctx -> {
+            appendTabs(ctx);
+            ctx.getStringBuilder().append(String.format("interface %s {\n", interfaceType.getName()));
 
-        appendTabs(stringBuilder, context.currentLevel());
-        stringBuilder.append(String.format("interface %s {\n", interfaceType.getName()));
-
-        context.setPunctuator(ctx -> {
-            ctx.getStringBuilder().append(",\n");
-            appendTabs(ctx.getStringBuilder(), ctx.currentLevel() - 1);
+            ctx.indent();
+            appendTabs(ctx);
         });
 
-        appendTabs(stringBuilder, context.currentLevel());
-        SchemaVisitor.super.visitInterface(interfaceType, context);
+        context.setItemSeparator(ctx -> {
+            ctx.getStringBuilder().append(",\n");
+            appendTabs(ctx);
+        });
 
-        stringBuilder.append('\n');
-        appendTabs(stringBuilder, context.currentLevel());
-        stringBuilder.append('}');
+        context.setEpilogue(ctx -> {
+            ctx.dedent();
+
+            ctx.getStringBuilder().append('\n');
+            appendTabs(ctx);
+            ctx.getStringBuilder().append('}');
+        });
+
+        SchemaVisitor.super.visitInterface(interfaceType, context);
     }
 
     @Override
     public void visitObject(ObjectType objectType, StringBuilderVisitorContext context) {
-        StringBuilder stringBuilder = context.getStringBuilder();
+        context.setPrologue(ctx -> {
+            appendTabs(ctx);
 
-        appendTabs(stringBuilder, context.currentLevel());
+            List<String> interfaces = objectType.getInterfaces();
+            if (interfaces.isEmpty()) {
+                ctx.getStringBuilder().append(String.format("type %s {\n", objectType.getName()));
+            } else {
+                String implementsString = interfaces.stream().collect(Collectors.joining(", "));
+                ctx.getStringBuilder().append(String.format("type %s : %s {\n", objectType.getName(), implementsString));
+            }
 
-        List<String> interfaces = objectType.getInterfaces();
-        if (interfaces.isEmpty()) {
-            stringBuilder.append(String.format("type %s {\n", objectType.getName()));
-        } else {
-            String implementsString = interfaces.stream().collect(Collectors.joining(", "));
-            stringBuilder.append(String.format("type %s : %s {\n", objectType.getName(), implementsString));
-        }
-
-        context.setPunctuator(ctx -> {
-            ctx.getStringBuilder().append(",\n");
-            appendTabs(ctx.getStringBuilder(), ctx.currentLevel() - 1);
+            ctx.indent();
+            appendTabs(ctx);
         });
 
-        appendTabs(stringBuilder, context.currentLevel());
-        SchemaVisitor.super.visitObject(objectType, context);
+        context.setItemSeparator(ctx -> {
+            ctx.getStringBuilder().append(",\n");
+            appendTabs(ctx);
+        });
 
-        stringBuilder.append('\n');
-        appendTabs(stringBuilder, context.currentLevel());
-        stringBuilder.append('}');
+        context.setEpilogue(ctx -> {
+            ctx.dedent();
+
+            ctx.getStringBuilder().append('\n');
+            appendTabs(ctx);
+            ctx.getStringBuilder().append('}');
+        });
+
+        SchemaVisitor.super.visitObject(objectType, context);
     }
 
     @Override
     public void visitScalar(ScalarType scalarType, StringBuilderVisitorContext context) {
         StringBuilder stringBuilder = context.getStringBuilder();
-        appendTabs(stringBuilder, context.currentLevel());
+        appendTabs(context);
         stringBuilder.append(String.format("scalar %s", scalarType.getName()));
     }
 
     @Override
     public void visitUnion(UnionType unionType, StringBuilderVisitorContext context) {
-        StringBuilder stringBuilder = context.getStringBuilder();
+        context.setPrologue(ctx -> {
+            appendTabs(ctx);
+            ctx.getStringBuilder().append(String.format("union %s = ", unionType.getName()));
+        });
 
-        appendTabs(stringBuilder, context.currentLevel());
-        stringBuilder.append(String.format("union %s = ", unionType.getName()));
-
-        // Visit manually: don't want to dump definition
-        // TODO: reconsider API for this
-        context.setPunctuator(ctx -> {
+        context.setItemSeparator(ctx -> {
             ctx.getStringBuilder().append(" | ");
         });
+
+        // Visit manually: don't want to dump definition
         context.enter();
         for (Type type : unionType.getPossibleTypes()) {
             context.incrementIndex();
-            stringBuilder.append(type.getName());
+            context.getStringBuilder().append(type.getName());
         }
         context.leave();
     }
@@ -179,29 +210,31 @@ public final class SchemaPrettyPrinter implements SchemaMessageWriter<String>, S
 
     @Override
     public void visitField(Field fieldType, StringBuilderVisitorContext context) {
-        StringBuilder stringBuilder = context.getStringBuilder();
+        context.setPrologue(ctx -> {
+            ctx.getStringBuilder().append(fieldType.getName());
+            if (!fieldType.getArguments().isEmpty()) {
+                ctx.getStringBuilder().append('(');
+            }
+        });
 
-        appendTabs(stringBuilder, context.currentLevel());
-        stringBuilder.append(fieldType.getName());
+        context.setItemSeparator(ctx -> {
+            ctx.getStringBuilder().append(", ");
+        });
 
-        // TODO: add prependers/appenders
-        if (!fieldType.getArguments().isEmpty()) {
-            stringBuilder.append('(');
-
-            boolean first = true;
-            for (InputValue inputValue : fieldType.getArguments()) {
-                if (!first) {
-                    stringBuilder.append(", ");
-                } else {
-                    first = false;
-                }
-
-                visitInputValue(inputValue, context);
+        context.setEpilogue(ctx -> {
+            if (!fieldType.getArguments().isEmpty()) {
+                ctx.getStringBuilder().append(')');
             }
 
-            stringBuilder.append(')');
+            ctx.getStringBuilder().append(": ");
+            ctx.getStringBuilder().append(fieldType.getType());
+        });
+
+        context.enter();
+        for (InputValue inputValue : fieldType.getArguments()) {
+            context.incrementIndex();
+            visitInputValue(inputValue, context);
         }
-        stringBuilder.append(": ");
-        stringBuilder.append(fieldType.getType());
+        context.leave();
     }
 }
