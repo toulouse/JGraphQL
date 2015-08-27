@@ -5,6 +5,7 @@ import java.util.List;
 import se.atoulou.jgraphql.models.QueryDocumentMessageWriter;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
 import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
+import se.atoulou.jgraphql.models.query.Selection.SelectionField;
 
 public final class QueryDocumentPrettyPrinter implements QueryDocumentMessageWriter<String> {
     protected final int tabWidth;
@@ -162,7 +163,7 @@ public final class QueryDocumentPrettyPrinter implements QueryDocumentMessageWri
 
             switch (selection.getKind()) {
             case FIELD:
-                visitSelectionField(stringBuilder, (Selection.Field) selection, tabs + 1);
+                visitSelectionField(stringBuilder, (Selection.SelectionField) selection, tabs + 1);
                 break;
             case FRAGMENT_SPREAD:
                 visitFragmentSpread(stringBuilder, (Selection.FragmentSpread) selection, tabs + 1);
@@ -209,7 +210,7 @@ public final class QueryDocumentPrettyPrinter implements QueryDocumentMessageWri
         }
     }
 
-    private void visitSelectionField(StringBuilder stringBuilder, se.atoulou.jgraphql.models.query.Selection.Field selection, int tabs) {
+    private void visitSelectionField(StringBuilder stringBuilder, SelectionField selection, int tabs) {
         String alias = selection.getAlias();
         if (alias != null) {
             stringBuilder.append(alias);

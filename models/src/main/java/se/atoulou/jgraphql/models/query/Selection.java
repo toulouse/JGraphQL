@@ -31,13 +31,13 @@ public abstract class Selection {
         return directives;
     }
 
-    public static class Field extends Selection {
+    public static class SelectionField extends Selection {
         private final String          alias;
         private final String          name;
         private final List<Argument>  arguments;
         private final List<Selection> selectionSet;
 
-        public Field(String alias, String name, List<Argument> arguments, List<Directive> directives, List<Selection> selectionSet) {
+        public SelectionField(String alias, String name, List<Argument> arguments, List<Directive> directives, List<Selection> selectionSet) {
             super(SelectionKind.FIELD, directives);
             this.alias = alias;
             this.name = name;
@@ -132,7 +132,7 @@ public abstract class Selection {
             case FIELD: {
                 List<Argument> arguments = this.arguments.stream().map(builder -> builder.build()).collect(Collectors.toList());
                 List<Selection> selectionSet = this.selectionSet.stream().map(builder -> builder.build()).collect(Collectors.toList());
-                return new Field(alias, name, arguments, directives, selectionSet);
+                return new SelectionField(alias, name, arguments, directives, selectionSet);
             }
             case FRAGMENT_SPREAD: {
                 return new FragmentSpread(name, directives);
