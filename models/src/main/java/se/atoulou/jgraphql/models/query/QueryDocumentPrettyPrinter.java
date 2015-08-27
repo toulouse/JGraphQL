@@ -123,7 +123,7 @@ public final class QueryDocumentPrettyPrinter implements QueryDocumentMessageWri
     private void visitDirective(StringBuilder stringBuilder, Directive directive) {
         stringBuilder.append(String.format("@%s", directive.getName()));
 
-        List<Argument> arguments = directive.getArgs();
+        List<Argument> arguments = directive.getArguments();
         if (!arguments.isEmpty()) {
             stringBuilder.append('(');
             boolean first = true;

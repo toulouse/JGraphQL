@@ -344,7 +344,7 @@ public class GraphQLQueryVisitor extends GraphQLQueryBaseVisitor<Void> {
             assert this.previousObject instanceof List;
             @SuppressWarnings("unchecked")
             List<Argument.Builder> args = (List<Argument.Builder>) this.previousObject;
-            directiveB.args(args);
+            directiveB.arguments(args);
         }
 
         this.previousObject = this.objectStack.pop();
