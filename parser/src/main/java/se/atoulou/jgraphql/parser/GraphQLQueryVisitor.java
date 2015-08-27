@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
-import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.query.QueryDocument;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition.OperationType;
@@ -41,17 +41,17 @@ import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.VariableDefinitionsCo
 public class GraphQLQueryVisitor extends GraphQLQueryBaseVisitor<Void> {
     private static final Logger LOG = LoggerFactory.getLogger(GraphQLQueryVisitor.class);
 
-    private final Document.Builder documentBuilder;
+    private final QueryDocument.Builder documentBuilder;
     private final Stack<Object>    objectStack;
     private Object                 previousObject;
 
     public GraphQLQueryVisitor() {
-        this.documentBuilder = Document.builder();
+        this.documentBuilder = QueryDocument.builder();
 
         this.objectStack = new Stack<>();
     }
 
-    public Document.Builder getDocumentBuilder() {
+    public QueryDocument.Builder getDocumentBuilder() {
         return documentBuilder;
     }
 
@@ -344,7 +344,7 @@ public class GraphQLQueryVisitor extends GraphQLQueryBaseVisitor<Void> {
             assert this.previousObject instanceof List;
             @SuppressWarnings("unchecked")
             List<Argument.Builder> args = (List<Argument.Builder>) this.previousObject;
-            directiveB.args(args);
+            directiveB.arguments(args);
         }
 
         this.previousObject = this.objectStack.pop();

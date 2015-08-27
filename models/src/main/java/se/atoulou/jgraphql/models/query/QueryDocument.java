@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Document {
+public class QueryDocument {
     private final List<OperationDefinition> operations;
     private final List<FragmentDefinition>  fragments;
 
@@ -12,7 +12,7 @@ public class Document {
         return new Builder();
     }
 
-    protected Document(List<OperationDefinition> operations, List<FragmentDefinition> fragments) {
+    protected QueryDocument(List<OperationDefinition> operations, List<FragmentDefinition> fragments) {
         this.operations = operations;
         this.fragments = fragments;
     }
@@ -34,10 +34,10 @@ public class Document {
             fragments = new ArrayList<>();
         }
 
-        public Document build() {
+        public QueryDocument build() {
             List<OperationDefinition> operations = this.operations.stream().map(builder -> builder.build()).collect(Collectors.toList());
             List<FragmentDefinition> fragments = this.fragments.stream().map(builder -> builder.build()).collect(Collectors.toList());
-            return new Document(operations, fragments);
+            return new QueryDocument(operations, fragments);
         }
 
         public List<OperationDefinition.Builder> operations() {

@@ -7,31 +7,31 @@ import java.io.Reader;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.query.QueryDocument;
 import se.atoulou.jgraphql.models.schema.Schema;
 import se.atoulou.jgraphql.parser.antlr.GraphQLQueryLexer;
 import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaLexer;
 import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaParser;
 
-public class ParseHelper {
-    public Schema parseSchema(char[] data, int numberOfActualCharsInArray) {
+public final class ParseHelper {
+    public static Schema parseSchema(char[] data, int numberOfActualCharsInArray) {
         return parseSchema(new ANTLRInputStream(data, numberOfActualCharsInArray));
     }
 
-    public Schema parseSchema(String string) {
+    public static Schema parseSchema(String string) {
         return parseSchema(new ANTLRInputStream(string));
     }
 
-    public Schema parseSchema(Reader r) throws IOException {
+    public static Schema parseSchema(Reader r) throws IOException {
         return parseSchema(new ANTLRInputStream(r));
     }
 
-    public Schema parseSchema(InputStream in) throws IOException {
+    public static Schema parseSchema(InputStream in) throws IOException {
         return parseSchema(new ANTLRInputStream(in));
     }
 
-    private Schema parseSchema(ANTLRInputStream input) {
+    private static Schema parseSchema(ANTLRInputStream input) {
         GraphQLSchemaLexer lexer = new GraphQLSchemaLexer(input);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         GraphQLSchemaParser parser = new GraphQLSchemaParser(tokenStream);
@@ -43,30 +43,30 @@ public class ParseHelper {
         return schemaB.build();
     }
 
-    public Document parseDocument(char[] data, int numberOfActualCharsInArray) {
+    public static QueryDocument parseDocument(char[] data, int numberOfActualCharsInArray) {
         return parseDocument(new ANTLRInputStream(data, numberOfActualCharsInArray));
     }
 
-    public Document parseDocument(String string) {
+    public static QueryDocument parseDocument(String string) {
         return parseDocument(new ANTLRInputStream(string));
     }
 
-    public Document parseDocument(Reader r) throws IOException {
+    public static QueryDocument parseDocument(Reader r) throws IOException {
         return parseDocument(new ANTLRInputStream(r));
     }
 
-    public Document parseDocument(InputStream in) throws IOException {
+    public static QueryDocument parseDocument(InputStream in) throws IOException {
         return parseDocument(new ANTLRInputStream(in));
     }
 
-    private Document parseDocument(ANTLRInputStream input) {
+    private static QueryDocument parseDocument(ANTLRInputStream input) {
         GraphQLQueryLexer lexer = new GraphQLQueryLexer(input);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         GraphQLQueryParser parser = new GraphQLQueryParser(tokenStream);
 
         GraphQLQueryVisitor visitor = new GraphQLQueryVisitor();
         visitor.visit(parser.document());
-        Document.Builder documentB = visitor.getDocumentBuilder();
+        QueryDocument.Builder documentB = visitor.getDocumentBuilder();
         // TODO: validation
         return documentB.build();
     }

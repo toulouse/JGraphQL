@@ -237,11 +237,11 @@ public class GraphQLSchemaVisitor extends GraphQLSchemaBaseVisitor<Void> {
 
         ArgumentsDefinitionContext argumentsDefinition = ctx.argumentsDefinition();
         if (argumentsDefinition != null) {
-            visitArgumentsDefinition(ctx.argumentsDefinition());
+            visitArgumentsDefinition(argumentsDefinition);
             assert this.previousObject instanceof List;
             @SuppressWarnings("unchecked")
-            List<InputValue.Builder> args = (List<InputValue.Builder>) this.previousObject;
-            fieldB.args(args);
+            List<InputValue.Builder> arguments = (List<InputValue.Builder>) this.previousObject;
+            fieldB.arguments(arguments);
         }
 
         this.previousObject = this.objectStack.pop();

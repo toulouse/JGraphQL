@@ -6,36 +6,36 @@ import java.util.stream.Collectors;
 
 public class Directive {
     private final String         name;
-    private final List<Argument> args;
+    private final List<Argument> arguments;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    protected Directive(String name, List<Argument> args) {
+    protected Directive(String name, List<Argument> arguments) {
         this.name = name;
-        this.args = args;
+        this.arguments = arguments;
     }
 
     public String getName() {
         return name;
     }
 
-    public List<Argument> getArgs() {
-        return args;
+    public List<Argument> getArguments() {
+        return arguments;
     }
 
     public static class Builder {
         private String                 name;
-        private List<Argument.Builder> args;
+        private List<Argument.Builder> arguments;
 
         protected Builder() {
-            args = new ArrayList<>();
+            arguments = new ArrayList<>();
         }
 
         public Directive build() {
-            List<Argument> args = this.args.stream().map(builder -> builder.build()).collect(Collectors.toList());
-            return new Directive(name, args);
+            List<Argument> arguments = this.arguments.stream().map(builder -> builder.build()).collect(Collectors.toList());
+            return new Directive(name, arguments);
         }
 
         public String name() {
@@ -47,18 +47,18 @@ public class Directive {
             return this;
         }
 
-        public List<Argument.Builder> args() {
-            return args;
+        public List<Argument.Builder> arguments() {
+            return arguments;
         }
 
-        public Builder args(List<Argument.Builder> args) {
-            this.args = args;
+        public Builder arguments(List<Argument.Builder> arguments) {
+            this.arguments = arguments;
             return this;
         }
     }
 
     @Override
     public String toString() {
-        return "Directive [name=" + name + ", args=" + args + "]";
+        return "Directive [name=" + name + ", arguments=" + arguments + "]";
     }
 }
