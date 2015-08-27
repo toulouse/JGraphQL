@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import se.atoulou.jgraphql.models.query.QueryDocument;
-import se.atoulou.jgraphql.models.query.QueryDocumentPrettyPrinter;
+import se.atoulou.jgraphql.models.transform.QueryDocumentPrettyPrinter;
 import se.atoulou.jgraphql.parser.ParseHelper;
 import se.atoulou.jgraphql.parser.antlr.GraphQLQueryLexer;
 

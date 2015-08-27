@@ -1,10 +1,13 @@
-package se.atoulou.jgraphql.models.schema;
+package se.atoulou.jgraphql.models.transform;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.models.SchemaMessageWriter;
-import se.atoulou.jgraphql.models.StringBuilderVisitorContext;
+import se.atoulou.jgraphql.models.schema.EnumValue;
+import se.atoulou.jgraphql.models.schema.Field;
+import se.atoulou.jgraphql.models.schema.InputValue;
+import se.atoulou.jgraphql.models.schema.Schema;
+import se.atoulou.jgraphql.models.schema.Type;
 import se.atoulou.jgraphql.models.schema.Type.EnumType;
 import se.atoulou.jgraphql.models.schema.Type.InputObjectType;
 import se.atoulou.jgraphql.models.schema.Type.InterfaceType;

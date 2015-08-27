@@ -1,4 +1,4 @@
-package se.atoulou.jgraphql.models;
+package se.atoulou.jgraphql.models.transform;
 
 import java.util.Stack;
 

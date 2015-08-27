@@ -1,4 +1,4 @@
-package se.atoulou.jgraphql.models;
+package se.atoulou.jgraphql.models.transform;
 
 public class StringBuilderVisitorContext extends VisitorContext<StringBuilderVisitorContext> {
     private final StringBuilder stringBuilder;
