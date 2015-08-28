@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>se.atoulou.jgraphql</groupId>
-	<artifactId>jgraphql</artifactId>
+	<artifactId>jgraphql-parent</artifactId>
 	<version>0.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
