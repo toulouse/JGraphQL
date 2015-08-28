@@ -16,14 +16,19 @@ import se.atoulou.jgraphql.models.transform.QueryDocumentBaseVisitor;
 import se.atoulou.jgraphql.models.transform.QueryDocumentMessageWriter;
 
 public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<StringBuilderVisitorContext>implements QueryDocumentMessageWriter<String> {
-    private final String newline;
-    private final String tab;
+    private final String  newline;
+    private final String  tab;
+    private final boolean isCompact;
 
     @Override
     public String writeQueryDocument(QueryDocument queryDocument) {
-        StringBuilderVisitorContext context = new StringBuilderVisitorContext(newline, tab);
+        StringBuilderVisitorContext context = new StringBuilderVisitorContext(newline, tab, isCompact);
         visitQueryDocument(queryDocument, context);
         return context.getStringBuilder().toString();
+    }
+
+    public QueryDocumentPrettyPrinter(boolean isCompact) {
+        this(isCompact ? "" : "¥n", isCompact ? "" : "  ", isCompact);
     }
 
     public QueryDocumentPrettyPrinter() {
@@ -31,8 +36,13 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
     }
 
     public QueryDocumentPrettyPrinter(String newline, String tab) {
+        this(newline, tab, false);
+    }
+
+    public QueryDocumentPrettyPrinter(String newline, String tab, boolean isCompact) {
         this.newline = newline;
         this.tab = tab;
+        this.isCompact = isCompact;
     }
 
     @Override
@@ -96,7 +106,8 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
 
     @Override
     public void punctuateArguments(List<Argument> arguments, StringBuilderVisitorContext context) {
-        context.append(", ");
+        context.append(',');
+        context.appendRemovableSpace();
     }
 
     @Override
@@ -108,8 +119,10 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
 
     @Override
     public void beforeArgument(Argument argument, StringBuilderVisitorContext context) {
-        String argumentString = String.format("%s: %s", argument.getName(), argument.getValue().getValue());
-        context.append(argumentString);
+        context.append(argument.getName());
+        context.append(':');
+        context.appendRemovableSpace();
+        context.append(argument.getValue().getValue());
     }
 
     @Override
@@ -121,7 +134,8 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
 
     @Override
     public void punctuateVariableDefinitions(List<VariableDefinition> variableDefinitions, StringBuilderVisitorContext context) {
-        context.append(", ");
+        context.append(',');
+        context.appendRemovableSpace();
     }
 
     @Override
@@ -133,11 +147,17 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
 
     @Override
     public void beforeVariableDefinition(VariableDefinition variableDefinition, StringBuilderVisitorContext context) {
-        String variableDefinitionString = String.format("%s: %s", variableDefinition.getVariable(), variableDefinition.getType());
-        context.append(variableDefinitionString);
+        context.append(variableDefinition.getVariable());
+        context.append(':');
+        context.appendRemovableSpace();
+        context.append(variableDefinition.getType());
+
         if (variableDefinition.getDefaultValue() != null) {
-            String defaultValueString = String.format(" = %s", variableDefinition.getDefaultValue().getValue());
-            context.append(defaultValueString);
+            context.appendRemovableSpace();
+            context.append('=');
+            context.appendRemovableSpace();
+
+            context.append(variableDefinition.getDefaultValue().getValue());
         }
     }
 
@@ -148,9 +168,12 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
         }
 
         if (selectionSet.size() == 1 && selectionSet.get(0).isLeaf()) {
-            context.append(" { ");
+            context.appendRemovableSpace();
+            context.append('{');
+            context.appendRemovableSpace();
         } else {
-            context.append(" {");
+            context.appendRemovableSpace();
+            context.append('{');
             context.indent();
 
             context.appendNewline();
@@ -160,6 +183,9 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
 
     @Override
     public void punctuateSelectionSet(List<Selection> selectionSet, StringBuilderVisitorContext context) {
+        if (context.isCompact()) {
+            context.append(',');
+        }
         context.appendNewline();
         context.appendTabs();
     }
@@ -170,7 +196,8 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
             return;
         }
         if (selectionSet.size() == 1 && selectionSet.get(0).isLeaf()) {
-            context.append(" }");
+            context.appendRemovableSpace();
+            context.append('}');
         } else {
             context.dedent();
 
@@ -195,7 +222,9 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
         String alias = selectionField.getAlias();
         if (alias != null) {
             context.append(alias);
-            context.append(" : ");
+            context.appendRemovableSpace();
+            context.append(':');
+            context.appendRemovableSpace();
         }
 
         String name = selectionField.getName();

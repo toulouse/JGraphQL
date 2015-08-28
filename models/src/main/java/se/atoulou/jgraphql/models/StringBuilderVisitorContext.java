@@ -3,20 +3,30 @@ package se.atoulou.jgraphql.models;
 import se.atoulou.jgraphql.models.transform.VisitorContext;
 
 public class StringBuilderVisitorContext extends VisitorContext<StringBuilderVisitorContext> {
-    private final String newline;
-    private final String tab;
+    private final String  newline;
+    private final String  tab;
+    private final boolean isCompact;
 
     private final StringBuilder stringBuilder;
     private int                 tabs;
     private boolean             newlinesEnabled;
 
-    public StringBuilderVisitorContext(String newline, String tab) {
-        this.stringBuilder = new StringBuilder();
-        this.tabs = 0;
-
+    public StringBuilderVisitorContext(String newline, String tab, boolean isCompact) {
         this.newline = newline;
         this.tab = tab;
+        this.isCompact = isCompact;
+
+        this.stringBuilder = new StringBuilder();
+        this.tabs = 0;
         this.newlinesEnabled = true;
+    }
+
+    public StringBuilderVisitorContext(String newline, String tab) {
+        this(newline, tab, false);
+    }
+
+    public StringBuilderVisitorContext(boolean isCompact) {
+        this("", "", isCompact);
     }
 
     public StringBuilderVisitorContext(String tab) {
@@ -33,6 +43,10 @@ public class StringBuilderVisitorContext extends VisitorContext<StringBuilderVis
 
     public final String getTab() {
         return tab;
+    }
+
+    public boolean isCompact() {
+        return isCompact;
     }
 
     public final StringBuilder getStringBuilder() {
@@ -75,13 +89,29 @@ public class StringBuilderVisitorContext extends VisitorContext<StringBuilderVis
         stringBuilder.append(s);
     }
 
+    public final void appendRemovableSpace() {
+        if (isCompact) {
+            return;
+        }
+
+        stringBuilder.append(' ');
+    }
+
     public final void appendNewline() {
+        if (isCompact) {
+            return;
+        }
+
         if (newlinesEnabled) {
             stringBuilder.append(newline);
         }
     }
 
     public final void appendNewlines(int count) {
+        if (isCompact) {
+            return;
+        }
+
         if (newlinesEnabled) {
             for (int i = 0; i < count; i++) {
                 stringBuilder.append(newline);
@@ -94,6 +124,10 @@ public class StringBuilderVisitorContext extends VisitorContext<StringBuilderVis
     }
 
     public final void appendTabs(int offset) {
+        if (isCompact) {
+            return;
+        }
+
         int spaceCount = tabs + offset;
         for (int i = 0; i < spaceCount; i++) {
             stringBuilder.append(tab);

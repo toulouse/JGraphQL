@@ -18,14 +18,19 @@ import se.atoulou.jgraphql.models.transform.SchemaBaseVisitor;
 import se.atoulou.jgraphql.models.transform.SchemaMessageWriter;
 
 public final class SchemaPrettyPrinter extends SchemaBaseVisitor<StringBuilderVisitorContext>implements SchemaMessageWriter<String> {
-    private final String newline;
-    private final String tab;
+    private final String  newline;
+    private final String  tab;
+    private final boolean isCompact;
 
     @Override
     public String writeSchema(Schema schema) {
-        StringBuilderVisitorContext context = new StringBuilderVisitorContext(newline, tab);
+        StringBuilderVisitorContext context = new StringBuilderVisitorContext(newline, tab, isCompact);
         visitSchema(schema, context);
         return context.getStringBuilder().toString();
+    }
+
+    public SchemaPrettyPrinter(boolean isCompact) {
+        this(isCompact ? "" : "¥n", isCompact ? "" : "  ", isCompact);
     }
 
     public SchemaPrettyPrinter() {
@@ -33,8 +38,13 @@ public final class SchemaPrettyPrinter extends SchemaBaseVisitor<StringBuilderVi
     }
 
     public SchemaPrettyPrinter(String newline, String tab) {
+        this(newline, tab, false);
+    }
+
+    public SchemaPrettyPrinter(String newline, String tab, boolean isCompact) {
         this.newline = newline;
         this.tab = tab;
+        this.isCompact = isCompact;
     }
 
     @Override
@@ -46,7 +56,9 @@ public final class SchemaPrettyPrinter extends SchemaBaseVisitor<StringBuilderVi
     public void beforeEnum(EnumType enumType, StringBuilderVisitorContext context) {
         context.appendTabs();
 
-        context.append(String.format("enum %s {", enumType.getName()));
+        context.append(String.format("enum %s", enumType.getName()));
+        context.appendRemovableSpace();
+        context.append('{');
         context.indent();
 
         context.appendNewline();
@@ -78,7 +90,10 @@ public final class SchemaPrettyPrinter extends SchemaBaseVisitor<StringBuilderVi
     public void beforeInputObject(InputObjectType inputObjectType, StringBuilderVisitorContext context) {
         context.appendTabs();
 
-        context.append(String.format("input %s {", inputObjectType.getName()));
+        context.append(String.format("input %s", inputObjectType.getName()));
+        context.appendRemovableSpace();
+        context.append('{');
+
         context.indent();
 
         context.appendNewline();
@@ -105,7 +120,10 @@ public final class SchemaPrettyPrinter extends SchemaBaseVisitor<StringBuilderVi
     public void beforeInterface(InterfaceType interfaceType, StringBuilderVisitorContext context) {
         context.appendTabs();
 
-        context.append(String.format("interface %s {", interfaceType.getName()));
+        context.append(String.format("interface %s", interfaceType.getName()));
+        context.appendRemovableSpace();
+        context.append('{');
+
         context.indent();
 
         context.appendNewline();
@@ -125,13 +143,22 @@ public final class SchemaPrettyPrinter extends SchemaBaseVisitor<StringBuilderVi
     public void beforeObject(ObjectType objectType, StringBuilderVisitorContext context) {
         context.appendTabs();
 
+        context.append(String.format("type %s", objectType.getName()));
+
         List<String> interfaces = objectType.getInterfaces();
-        if (interfaces.isEmpty()) {
-            context.append(String.format("type %s {", objectType.getName()));
-        } else {
-            String implementsString = interfaces.stream().collect(Collectors.joining(", "));
-            context.append(String.format("type %s : %s {", objectType.getName(), implementsString));
+        if (!interfaces.isEmpty()) {
+            String joiner = context.isCompact() ? "," : ", ";
+
+            String implementsString = interfaces.stream().collect(Collectors.joining(joiner));
+            context.appendRemovableSpace();
+            context.append(':');
+            context.appendRemovableSpace();
+            context.append(implementsString);
         }
+
+        context.appendRemovableSpace();
+        context.append('{');
+
         context.indent();
 
         context.appendNewline();
@@ -151,17 +178,33 @@ public final class SchemaPrettyPrinter extends SchemaBaseVisitor<StringBuilderVi
     public void visitScalar(ScalarType scalarType, StringBuilderVisitorContext context) {
         context.appendTabs();
         context.append(String.format("scalar %s", scalarType.getName()));
+
+        if (context.isCompact()) {
+            context.append(',');
+        }
     }
 
     @Override
     public void beforeUnion(UnionType unionType, StringBuilderVisitorContext context) {
         context.appendTabs();
-        context.append(String.format("union %s = ", unionType.getName()));
+        context.append(String.format("union %s", unionType.getName()));
+        context.appendRemovableSpace();
+        context.append('=');
+        context.appendRemovableSpace();
+    }
+
+    @Override
+    public void afterUnion(UnionType unionType, StringBuilderVisitorContext context) {
+        if (context.isCompact()) {
+            context.append(',');
+        }
     }
 
     @Override
     public void punctuateUnion(UnionType unionType, StringBuilderVisitorContext context) {
-        context.append(" | ");
+        context.appendRemovableSpace();
+        context.append('|');
+        context.appendRemovableSpace();
     }
 
     @Override
@@ -171,12 +214,17 @@ public final class SchemaPrettyPrinter extends SchemaBaseVisitor<StringBuilderVi
 
     @Override
     public void beforeInputValue(InputValue inputValue, StringBuilderVisitorContext context) {
-        String inputValueString = String.format("%s: %s", inputValue.getName(), inputValue.getType().getName());
-        context.append(inputValueString);
+        context.append(inputValue.getName());
+        context.append(':');
+        context.appendRemovableSpace();
+        context.append(inputValue.getType().getName());
 
         if (inputValue.getDefaultValue() != null) {
-            String defaultValueString = String.format(" = %s", inputValue.getDefaultValue());
-            context.append(defaultValueString);
+            context.appendRemovableSpace();
+            context.append('=');
+            context.appendRemovableSpace();
+
+            context.append(inputValue.getDefaultValue());
         }
     }
 
@@ -204,7 +252,8 @@ public final class SchemaPrettyPrinter extends SchemaBaseVisitor<StringBuilderVi
             context.setNewlinesEnabled(true);
         }
 
-        context.append(": ");
+        context.append(':');
+        context.appendRemovableSpace();
         context.append(field.getType());
     }
 }

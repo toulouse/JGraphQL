@@ -31,6 +31,6 @@ public class Test {
 
         in = Test.class.getResourceAsStream("/introspectionQuery.graphqlQuery");
         QueryDocument document = ParseHelper.parseDocument(in);
-        LOG.trace("Document: \n{}", new QueryDocumentPrettyPrinter("\n", "\t").writeQueryDocument(document));
+        LOG.trace("Document: \n{}", new QueryDocumentPrettyPrinter().writeQueryDocument(document));
     }
 }
