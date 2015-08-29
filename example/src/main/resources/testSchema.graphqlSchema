@@ -1,13 +1,13 @@
-interface Foo {
-    name: String
+interface Foo @directive(argument: 1) {
+    name: String @directive(argument: 2)
 }
 
-interface Bar {
+interface Bar  @directive(argument: 3) {
     name: String
     description: String
 }
 
-type Baz : Foo, Bar {
+type Baz : Foo, Bar  @directive(argument: 4) {
     name: String
     description: String!
     type: String
@@ -16,12 +16,12 @@ type Baz : Foo, Bar {
     arrayNonNullTest: [String!]!
 }
 
-scalar SomeScalar
+scalar SomeScalar @directive(argument: 5)
 
-union FooOrBazOrSomeScalar = Foo | Baz | SomeScalar
+union FooOrBazOrSomeScalar  @directive(argument: 6) = Foo @directive(argument: 7) | Baz @directive(argument: 8) | SomeScalar
 
 enum SomeEnum {
-    A1, B2, C3
+    A1, B2 @directive(argument: 9), C3
     D4, E5,
     F6
 }

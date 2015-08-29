@@ -89,3 +89,19 @@ nonNullType
 defaultValue
     : EQUAL constValue
     ;
+
+directives
+    : directive+
+    ;
+
+directive
+    : AT NAME arguments?
+    ; 
+
+arguments
+    : PAREN_L argument+ PAREN_R
+    ;
+
+argument
+    : NAME COLON value
+    ;

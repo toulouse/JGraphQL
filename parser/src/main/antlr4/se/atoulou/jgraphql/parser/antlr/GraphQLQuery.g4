@@ -39,14 +39,6 @@ alias
     : NAME COLON
     ;
 
-arguments
-    : PAREN_L argument+ PAREN_R
-    ;
-
-argument
-    : NAME COLON value
-    ;
-
 fragmentSpread
     : ELLIPSIS fragmentName directives?
     ;
@@ -74,11 +66,3 @@ variableDefinitions
 variableDefinition
     : variable COLON type defaultValue?
     ;
-
-directives
-    : directive+
-    ;
-
-directive
-    : AT NAME arguments?
-    ; 

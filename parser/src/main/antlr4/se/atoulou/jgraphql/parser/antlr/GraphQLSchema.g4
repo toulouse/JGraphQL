@@ -46,7 +46,7 @@ schemaDefinition
     ;
 
 typeDefinition
-    : 'type' NAME implementTypes? BRACE_L fieldDefinition+ BRACE_R
+    : 'type' NAME implementTypes? directives? BRACE_L fieldDefinition+ BRACE_R
     ;
 
 implementTypes
@@ -54,7 +54,7 @@ implementTypes
     ;
 
 fieldDefinition
-    : (NAME | 'type') argumentsDefinition? COLON type
+    : (NAME | 'type') argumentsDefinition? COLON type directives?
     ;
 
 argumentsDefinition
@@ -66,30 +66,30 @@ inputValueDefinition
     ;
 
 interfaceDefinition
-    : 'interface' NAME  BRACE_L fieldDefinition+ BRACE_R
+    : 'interface' NAME directives? BRACE_L fieldDefinition+ BRACE_R
     ;
 
 unionDefinition
-    : 'union' NAME EQUAL unionMembers
+    : 'union' NAME directives? EQUAL unionMembers
     ;
 
 unionMembers
-    : namedType
-    |   namedType PIPE unionMembers
+    : namedType directives?
+    | namedType directives? PIPE unionMembers
     ;
 
 scalarDefinition
-    : 'scalar' namedType
+    : 'scalar' namedType directives? 
     ;
 
 enumDefinition
-    : 'enum' NAME BRACE_L enumValueDefinition+ BRACE_R
+    : 'enum' NAME directives? BRACE_L enumValueDefinition+ BRACE_R
     ;
 
 enumValueDefinition
-    : NAME
+    : NAME directives? 
     ;
 
 inputObjectDefinition
-    : 'input' NAME BRACE_L inputValueDefinition+ BRACE_R
+    : 'input' NAME directives? BRACE_L inputValueDefinition+ BRACE_R
     ;

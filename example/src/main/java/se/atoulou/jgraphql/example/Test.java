@@ -9,28 +9,28 @@ import org.antlr.v4.runtime.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.atoulou.jgraphql.models.QueryDocumentPrettyPrinter;
-import se.atoulou.jgraphql.models.query.QueryDocument;
+import se.atoulou.jgraphql.models.SchemaPrettyPrinter;
+import se.atoulou.jgraphql.models.schema.Schema;
 import se.atoulou.jgraphql.parser.ParseHelper;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryLexer;
+import se.atoulou.jgraphql.parser.antlr.GraphQLSchemaLexer;
 
 public class Test {
     private static final Logger LOG = LoggerFactory.getLogger(Test.class);
 
     public static void main(String[] args) throws IOException {
-        InputStream in = Test.class.getResourceAsStream("/introspectionQuery.graphqlQuery");
+        InputStream in = Test.class.getResourceAsStream("/schemaSchema.graphqlSchema");
 
         ANTLRInputStream input = new ANTLRInputStream(in);
-        GraphQLQueryLexer lexer = new GraphQLQueryLexer(input);
+        GraphQLSchemaLexer lexer = new GraphQLSchemaLexer(input);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 
         tokenStream.fill();
         for (Token token : tokenStream.getTokens()) {
-            LOG.trace("token type: {} str: {}", GraphQLQueryLexer.VOCABULARY.getSymbolicName(token.getType()), token);
+            LOG.trace("token type: {} str: {}", GraphQLSchemaLexer.VOCABULARY.getSymbolicName(token.getType()), token);
         }
 
-        in = Test.class.getResourceAsStream("/introspectionQuery.graphqlQuery");
-        QueryDocument document = ParseHelper.parseDocument(in);
-        LOG.trace("Document: \n{}", new QueryDocumentPrettyPrinter().writeQueryDocument(document));
+        in = Test.class.getResourceAsStream("/schemaSchema.graphqlSchema");
+        Schema schema = ParseHelper.parseSchema(in);
+        LOG.trace("Document: \n{}", new SchemaPrettyPrinter().writeSchema(schema));
     }
 }
