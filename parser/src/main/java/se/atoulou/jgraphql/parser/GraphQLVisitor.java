@@ -10,49 +10,78 @@ import org.slf4j.LoggerFactory;
 
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
-import se.atoulou.jgraphql.models.query.QueryDocument;
+import se.atoulou.jgraphql.models.query.Document;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition.OperationType;
 import se.atoulou.jgraphql.models.query.Selection;
 import se.atoulou.jgraphql.models.query.Selection.SelectionKind;
+import se.atoulou.jgraphql.models.query.TypeDefinition;
+import se.atoulou.jgraphql.models.query.TypeDefinition.TypeKind;
 import se.atoulou.jgraphql.models.query.Value;
 import se.atoulou.jgraphql.models.query.VariableDefinition;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryBaseVisitor;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.AliasContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.ArgumentContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.ArgumentsContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.ConstValueContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.DefaultValueContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.DirectiveContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.DirectivesContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.DocumentContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.FieldContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.FragmentDefinitionContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.FragmentSpreadContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.InlineFragmentContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.OperationDefinitionContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.SelectionContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.SelectionSetContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.ValueContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.VariableDefinitionContext;
-import se.atoulou.jgraphql.parser.antlr.GraphQLQueryParser.VariableDefinitionsContext;
+import se.atoulou.jgraphql.models.schema.EnumValue;
+import se.atoulou.jgraphql.models.schema.Field;
+import se.atoulou.jgraphql.models.schema.InputValue;
+import se.atoulou.jgraphql.parser.antlr.GraphQLBaseVisitor;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.AliasContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.ArgumentContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.ArgumentsContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.ConstValueContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.DefaultValueContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.DirectiveContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.DirectivesContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.DocumentContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.EnumDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.EnumValueDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.FieldContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.FieldDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.FragmentDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.FragmentSpreadContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.InlineFragmentContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.InputObjectDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.InputValueDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.InterfaceDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.NamedTypeContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.ObjectTypeDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.OperationDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.ScalarDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.SelectionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.SelectionSetContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.UnionDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.UnionMembersContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.ValueContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.VariableDefinitionContext;
+import se.atoulou.jgraphql.parser.antlr.GraphQLParser.VariableDefinitionsContext;
 
-public class GraphQLQueryVisitor extends GraphQLQueryBaseVisitor<Void> {
-    private static final Logger LOG = LoggerFactory.getLogger(GraphQLQueryVisitor.class);
+public class GraphQLVisitor extends GraphQLBaseVisitor<Void> {
+    private static final Logger LOG = LoggerFactory.getLogger(GraphQLVisitor.class);
 
-    private final QueryDocument.Builder documentBuilder;
+    private final Document.Builder documentBuilder;
+    private final TypeRegistry     typeRegistry;
     private final Stack<Object>    objectStack;
     private Object                 previousObject;
 
-    public GraphQLQueryVisitor() {
-        this.documentBuilder = QueryDocument.builder();
+    public GraphQLVisitor() {
+        this.documentBuilder = Document.builder();
+
+        // Add type registry; register base types
+        this.typeRegistry = new TypeRegistry();
+        this.typeRegistry.registerDeclaration("Int", TypeKind.SCALAR);
+        this.typeRegistry.registerDeclaration("Float", TypeKind.SCALAR);
+        this.typeRegistry.registerDeclaration("String", TypeKind.SCALAR);
+        this.typeRegistry.registerDeclaration("Boolean", TypeKind.SCALAR);
+        this.typeRegistry.registerDeclaration("ID", TypeKind.SCALAR);
 
         this.objectStack = new Stack<>();
     }
 
-    public QueryDocument.Builder getDocumentBuilder() {
+    public Document.Builder getDocumentBuilder() {
         return documentBuilder;
+    }
+
+    public TypeRegistry getTypeRegistry() {
+        return typeRegistry;
     }
 
     @Override
@@ -62,6 +91,152 @@ public class GraphQLQueryVisitor extends GraphQLQueryBaseVisitor<Void> {
         super.visitDocument(ctx);
 
         LOG.trace("Exiting {}", "query document");
+        LOG.trace("Adding objects possibleTypes to interfaces");
+        this.typeRegistry.reconcilePossibleTypes();
+        // TODO: Schema validation
+
+        return null;
+    }
+
+    @Override
+    public Void visitObjectTypeDefinition(ObjectTypeDefinitionContext ctx) {
+        String name = ctx.NAME().getText();
+        LOG.trace("<Type name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        TypeDefinition.Builder typeB = this.typeRegistry.registerDeclaration(name, TypeKind.OBJECT);
+        this.objectStack.push(typeB);
+        this.documentBuilder.types().add(typeB);
+
+        if (ctx.implementTypes() != null) {
+            for (NamedTypeContext typeName : ctx.implementTypes().namedType()) {
+                String typeNameString = typeName.NAME().getText();
+                TypeDefinition.Builder implementedTypeB = this.typeRegistry.registerUsage(typeNameString);
+                typeB.interfaces().add(implementedTypeB);
+                LOG.trace("<Implements name=\"{}\" />", typeNameString);
+            }
+        }
+
+        for (FieldDefinitionContext fieldDefinition : ctx.fieldDefinition()) {
+            visitFieldDefinition(fieldDefinition);
+            assert this.previousObject instanceof Field.Builder;
+            Field.Builder fieldB = (Field.Builder) this.previousObject;
+            typeB.fields().add(fieldB);
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Type>");
+        return null;
+    }
+
+    @Override
+    public Void visitInterfaceDefinition(InterfaceDefinitionContext ctx) {
+        String name = ctx.NAME().getText();
+        LOG.trace("<Interface name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        TypeDefinition.Builder typeB = this.typeRegistry.registerDeclaration(name, TypeKind.INTERFACE);
+        this.objectStack.push(typeB);
+        this.documentBuilder.types().add(typeB);
+
+        for (FieldDefinitionContext fieldDefinition : ctx.fieldDefinition()) {
+            visitFieldDefinition(fieldDefinition);
+            assert this.previousObject instanceof Field.Builder;
+            Field.Builder fieldB = (Field.Builder) this.previousObject;
+            typeB.fields().add(fieldB);
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Interface>");
+        return null;
+    }
+
+    @Override
+    public Void visitUnionDefinition(UnionDefinitionContext ctx) {
+        String name = ctx.NAME().getText();
+        LOG.trace("<Union name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        TypeDefinition.Builder typeB = this.typeRegistry.registerDeclaration(name, TypeKind.UNION);
+        this.objectStack.push(typeB);
+        this.documentBuilder.types().add(typeB);
+
+        UnionMembersContext unionMembers = ctx.unionMembers();
+        while (unionMembers != null) {
+            String typeName = unionMembers.namedType().NAME().getText();
+            LOG.trace("<Type name=\"{}\" />", typeName);
+
+            TypeDefinition.Builder possibleTypeB = this.typeRegistry.registerUsage(typeName);
+            typeB.possibleTypes().add(possibleTypeB);
+            unionMembers = unionMembers.unionMembers();
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Union>");
+        return null;
+    }
+
+    @Override
+    public Void visitScalarDefinition(ScalarDefinitionContext ctx) {
+        String name = ctx.namedType().NAME().getText();
+        LOG.trace("<Scalar name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        TypeDefinition.Builder typeB = this.typeRegistry.registerDeclaration(name, TypeKind.SCALAR);
+        this.objectStack.push(typeB);
+        this.documentBuilder.types().add(typeB);
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Scalar>");
+        return null;
+    }
+
+    @Override
+    public Void visitEnumDefinition(EnumDefinitionContext ctx) {
+        String name = ctx.NAME().getText();
+        LOG.trace("<Enum name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        TypeDefinition.Builder typeB = this.typeRegistry.registerDeclaration(name, TypeKind.ENUM);
+        this.objectStack.push(typeB);
+        this.documentBuilder.types().add(typeB);
+
+        List<EnumValueDefinitionContext> enumValueDefinitions = ctx.enumValueDefinition();
+        for (EnumValueDefinitionContext enumValueDefinition : enumValueDefinitions) {
+            String enumName = enumValueDefinition.NAME().getText();
+            LOG.trace("<EnumValue name=\"{}\" />", enumName);
+
+            EnumValue.Builder enumValueB = EnumValue.builder();
+            enumValueB.name(enumName);
+            typeB.enumValues().add(enumValueB);
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</Enum>");
+        return null;
+    }
+
+    @Override
+    public Void visitInputObjectDefinition(InputObjectDefinitionContext ctx) {
+        String name = ctx.NAME().getText();
+        LOG.trace("<InputObject name=\"{}\">", name);
+
+        // Push builder onto stack & populate
+        TypeDefinition.Builder typeB = this.typeRegistry.registerDeclaration(name, TypeKind.INPUT_OBJECT);
+        this.objectStack.push(typeB);
+        this.documentBuilder.types().add(typeB);
+
+        List<InputValueDefinitionContext> inputValueDefinitions = ctx.inputValueDefinition();
+        for (InputValueDefinitionContext inputValueDefinition : inputValueDefinitions) {
+            visitInputValueDefinition(inputValueDefinition);
+            assert this.previousObject instanceof InputValue.Builder;
+            InputValue.Builder inputValueB = (InputValue.Builder) this.previousObject;
+
+            typeB.inputFields().add(inputValueB);
+        }
+
+        this.previousObject = this.objectStack.pop();
+        LOG.trace("</InputObject>");
         return null;
     }
 

@@ -6,7 +6,7 @@ import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
-import se.atoulou.jgraphql.models.query.QueryDocument;
+import se.atoulou.jgraphql.models.query.Document;
 import se.atoulou.jgraphql.models.query.Selection;
 import se.atoulou.jgraphql.models.query.VariableDefinition;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
@@ -14,7 +14,7 @@ import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
 import se.atoulou.jgraphql.models.query.Selection.SelectionField;
 
 public interface QueryDocumentVisitor<T extends VisitorContext<T>> {
-    void visitQueryDocument(QueryDocument queryDocument, T context);
+    void visitQueryDocument(Document queryDocument, T context);
 
     void visitOperation(OperationDefinition operation, T context);
 

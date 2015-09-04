@@ -2,29 +2,29 @@ package se.atoulou.jgraphql.models.transform;
 
 import java.util.List;
 
+import se.atoulou.jgraphql.models.query.TypeDefinition;
+import se.atoulou.jgraphql.models.query.TypeDefinition.EnumType;
+import se.atoulou.jgraphql.models.query.TypeDefinition.InputObjectType;
+import se.atoulou.jgraphql.models.query.TypeDefinition.InterfaceType;
+import se.atoulou.jgraphql.models.query.TypeDefinition.ListType;
+import se.atoulou.jgraphql.models.query.TypeDefinition.NonNullType;
+import se.atoulou.jgraphql.models.query.TypeDefinition.ObjectType;
+import se.atoulou.jgraphql.models.query.TypeDefinition.ScalarType;
+import se.atoulou.jgraphql.models.query.TypeDefinition.UnionType;
 import se.atoulou.jgraphql.models.schema.EnumValue;
 import se.atoulou.jgraphql.models.schema.Field;
 import se.atoulou.jgraphql.models.schema.InputValue;
 import se.atoulou.jgraphql.models.schema.Schema;
-import se.atoulou.jgraphql.models.schema.Type;
-import se.atoulou.jgraphql.models.schema.Type.EnumType;
-import se.atoulou.jgraphql.models.schema.Type.InputObjectType;
-import se.atoulou.jgraphql.models.schema.Type.InterfaceType;
-import se.atoulou.jgraphql.models.schema.Type.ListType;
-import se.atoulou.jgraphql.models.schema.Type.NonNullType;
-import se.atoulou.jgraphql.models.schema.Type.ObjectType;
-import se.atoulou.jgraphql.models.schema.Type.ScalarType;
-import se.atoulou.jgraphql.models.schema.Type.UnionType;
 
 public class SchemaBaseVisitor<T extends VisitorContext<T>> implements SchemaVisitor<T>, SchemaVisitorActions<T> {
     @Override
     public void visitSchema(Schema schema, T context) {
         beforeSchema(schema, context);
 
-        List<Type> types = schema.getTypes();
+        List<TypeDefinition> types = schema.getTypes();
         if (!types.isEmpty()) {
             context.enter();
-            for (Type type : schema.getTypes()) {
+            for (TypeDefinition type : schema.getTypes()) {
                 context.incrementIndex();
 
                 if (context.currentIndex() >= 1) {
@@ -40,7 +40,7 @@ public class SchemaBaseVisitor<T extends VisitorContext<T>> implements SchemaVis
     }
 
     @Override
-    public void visitType(Type type, T context) {
+    public void visitType(TypeDefinition type, T context) {
         beforeType(type, context);
 
         switch (type.getKind()) {
@@ -149,7 +149,7 @@ public class SchemaBaseVisitor<T extends VisitorContext<T>> implements SchemaVis
         beforeUnion(unionType, context);
 
         context.enter();
-        for (Type type : unionType.getPossibleTypes()) {
+        for (TypeDefinition type : unionType.getPossibleTypes()) {
             context.incrementIndex();
 
             if (context.currentIndex() >= 1) {
@@ -163,7 +163,7 @@ public class SchemaBaseVisitor<T extends VisitorContext<T>> implements SchemaVis
     }
 
     @Override
-    public void visitUnionType(Type unionType, T context) {
+    public void visitUnionType(TypeDefinition unionType, T context) {
         beforeUnionType(unionType, context);
         afterUnionType(unionType, context);
     }
@@ -225,223 +225,149 @@ public class SchemaBaseVisitor<T extends VisitorContext<T>> implements SchemaVis
 
     @Override
     public void beforeSchema(Schema schema, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void punctuateSchema(Schema schema, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterSchema(Schema schema, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
-    public void beforeType(Type type, T context) {
-        // TODO Auto-generated method stub
-        
+    public void beforeType(TypeDefinition type, T context) {
     }
 
     @Override
-    public void afterType(Type type, T context) {
-        // TODO Auto-generated method stub
-        
+    public void afterType(TypeDefinition type, T context) {
     }
 
     @Override
     public void beforeEnum(EnumType enumType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void punctuateEnum(EnumType enumType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterEnum(EnumType enumType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeEnumValue(EnumValue enumValue, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterEnumValue(EnumValue enumValue, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeInputObject(InputObjectType inputObjectType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterInputObject(InputObjectType inputObjectType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeInterface(InterfaceType interfaceType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterInterface(InterfaceType interfaceType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeList(ListType listType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterList(ListType listType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeNonNull(NonNullType nonNullType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterNonNull(NonNullType nonNullType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeObject(ObjectType objectType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterObject(ObjectType objectType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeScalar(ScalarType scalarType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterScalar(ScalarType scalarType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeUnion(UnionType unionType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void punctuateUnion(UnionType unionType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterUnion(UnionType unionType, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
-    public void beforeUnionType(Type unionType, T context) {
-        // TODO Auto-generated method stub
-        
+    public void beforeUnionType(TypeDefinition unionType, T context) {
     }
 
     @Override
-    public void afterUnionType(Type unionType, T context) {
-        // TODO Auto-generated method stub
-        
+    public void afterUnionType(TypeDefinition unionType, T context) {
     }
 
     @Override
     public void beforeInputValues(List<InputValue> inputValues, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void punctuateInputValues(List<InputValue> inputValues, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterInputValues(List<InputValue> inputValues, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeInputValue(InputValue inputValue, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterInputValue(InputValue inputValue, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeFields(List<Field> fields, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void punctuateFields(List<Field> fields, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterFields(List<Field> fields, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void beforeField(Field field, T context) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void afterField(Field field, T context) {
-        // TODO Auto-generated method stub
-        
     }
 }

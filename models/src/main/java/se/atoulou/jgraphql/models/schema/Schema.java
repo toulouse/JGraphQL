@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import se.atoulou.jgraphql.models.query.TypeDefinition;
+
 public class Schema {
-    private final List<Type>      types;
-    private final Type            queryType;
-    private final Type            mutationType;
+    private final List<TypeDefinition>      types;
+    private final TypeDefinition            queryType;
+    private final TypeDefinition            mutationType;
     private final List<Directive> directives;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    protected Schema(List<Type> types, Type queryType, Type mutationType, List<Directive> directives) {
+    protected Schema(List<TypeDefinition> types, TypeDefinition queryType, TypeDefinition mutationType, List<Directive> directives) {
         super();
         this.types = types;
         this.queryType = queryType;
@@ -22,15 +24,15 @@ public class Schema {
         this.directives = directives;
     }
 
-    public List<Type> getTypes() {
+    public List<TypeDefinition> getTypes() {
         return types;
     }
 
-    public Type getQueryType() {
+    public TypeDefinition getQueryType() {
         return queryType;
     }
 
-    public Type getMutationType() {
+    public TypeDefinition getMutationType() {
         return mutationType;
     }
 
@@ -39,9 +41,9 @@ public class Schema {
     }
 
     public static class Builder {
-        private List<Type.Builder>      types;
-        private Type                    queryType;
-        private Type                    mutationType;
+        private List<TypeDefinition.Builder>      types;
+        private TypeDefinition                    queryType;
+        private TypeDefinition                    mutationType;
         private List<Directive.Builder> directives;
 
         protected Builder() {
@@ -50,34 +52,34 @@ public class Schema {
         }
 
         public Schema build() {
-            List<Type> types = this.types.stream().map(builder -> builder.build()).collect(Collectors.toList());
+            List<TypeDefinition> types = this.types.stream().map(builder -> builder.build()).collect(Collectors.toList());
             List<Directive> directives = this.directives.stream().map(builder -> builder.build()).collect(Collectors.toList());
             return new Schema(types, queryType, mutationType, directives);
         }
 
-        public List<Type.Builder> types() {
+        public List<TypeDefinition.Builder> types() {
             return types;
         }
 
-        public Builder types(List<Type.Builder> types) {
+        public Builder types(List<TypeDefinition.Builder> types) {
             this.types = types;
             return this;
         }
 
-        public Type queryType() {
+        public TypeDefinition queryType() {
             return queryType;
         }
 
-        public Builder queryType(Type queryType) {
+        public Builder queryType(TypeDefinition queryType) {
             this.queryType = queryType;
             return this;
         }
 
-        public Type mutationType() {
+        public TypeDefinition mutationType() {
             return mutationType;
         }
 
-        public Builder mutationType(Type mutationType) {
+        public Builder mutationType(TypeDefinition mutationType) {
             this.mutationType = mutationType;
             return this;
         }

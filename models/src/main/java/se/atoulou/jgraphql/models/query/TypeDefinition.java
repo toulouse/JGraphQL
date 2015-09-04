@@ -1,10 +1,14 @@
-package se.atoulou.jgraphql.models.schema;
+package se.atoulou.jgraphql.models.query;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Type {
+import se.atoulou.jgraphql.models.schema.EnumValue;
+import se.atoulou.jgraphql.models.schema.Field;
+import se.atoulou.jgraphql.models.schema.InputValue;
+
+public class TypeDefinition {
     public static enum TypeKind {
         SCALAR,
         OBJECT,
@@ -24,7 +28,7 @@ public class Type {
         return new Builder();
     }
 
-    protected Type(TypeKind kind, String name, String description) {
+    protected TypeDefinition(TypeKind kind, String name, String description) {
         super();
         this.kind = kind;
         this.name = name;
@@ -43,7 +47,7 @@ public class Type {
         return description;
     }
 
-    public static class EnumType extends Type {
+    public static class EnumType extends TypeDefinition {
         private final List<EnumValue> enumValues;
 
         public EnumType(TypeKind kind, String name, String description, List<EnumValue> enumValues) {
@@ -62,7 +66,7 @@ public class Type {
         }
     }
 
-    public static class InterfaceType extends Type {
+    public static class InterfaceType extends TypeDefinition {
         private final List<Field>  fields;
         private final List<String> possibleTypes;
 
@@ -87,7 +91,7 @@ public class Type {
         }
     }
 
-    public static class InputObjectType extends Type {
+    public static class InputObjectType extends TypeDefinition {
         private final List<InputValue> inputFields;
 
         public InputObjectType(TypeKind kind, String name, String description, List<InputValue> inputFields) {
@@ -106,15 +110,15 @@ public class Type {
         }
     }
 
-    public static class ListType extends Type {
-        private final Type ofType;
+    public static class ListType extends TypeDefinition {
+        private final TypeDefinition ofType;
 
-        public ListType(TypeKind kind, String name, String description, Type ofType) {
+        public ListType(TypeKind kind, String name, String description, TypeDefinition ofType) {
             super(kind, name, description);
             this.ofType = ofType;
         }
 
-        public Type getOfType() {
+        public TypeDefinition getOfType() {
             return ofType;
         }
 
@@ -124,15 +128,15 @@ public class Type {
         }
     }
 
-    public static class NonNullType extends Type {
-        private final Type ofType;
+    public static class NonNullType extends TypeDefinition {
+        private final TypeDefinition ofType;
 
-        public NonNullType(TypeKind kind, String name, String description, Type ofType) {
+        public NonNullType(TypeKind kind, String name, String description, TypeDefinition ofType) {
             super(kind, name, description);
             this.ofType = ofType;
         }
 
-        public Type getOfType() {
+        public TypeDefinition getOfType() {
             return ofType;
         }
 
@@ -142,7 +146,7 @@ public class Type {
         }
     }
 
-    public static class ObjectType extends Type {
+    public static class ObjectType extends TypeDefinition {
         private final List<Field>  fields;
         private final List<String> interfaces;
 
@@ -167,7 +171,7 @@ public class Type {
         }
     }
 
-    public static class ScalarType extends Type {
+    public static class ScalarType extends TypeDefinition {
         public ScalarType(TypeKind kind, String name, String description) {
             super(kind, name, description);
         }
@@ -178,15 +182,15 @@ public class Type {
         }
     }
 
-    public static class UnionType extends Type {
-        private final List<Type> possibleTypes;
+    public static class UnionType extends TypeDefinition {
+        private final List<TypeDefinition> possibleTypes;
 
-        public UnionType(TypeKind kind, String name, String description, List<Type> possibleTypes) {
+        public UnionType(TypeKind kind, String name, String description, List<TypeDefinition> possibleTypes) {
             super(kind, name, description);
             this.possibleTypes = possibleTypes;
         }
 
-        public List<Type> getPossibleTypes() {
+        public List<TypeDefinition> getPossibleTypes() {
             return possibleTypes;
         }
 
@@ -198,16 +202,16 @@ public class Type {
     }
 
     public static class Builder {
-        private Type cachedBuild;
+        private TypeDefinition cachedBuild;
 
         private TypeKind                 kind;
         private String                   name;
         private String                   description;
         private List<Field.Builder>      fields;
-        private List<Type.Builder>       interfaces;
-        private List<Type.Builder>       possibleTypes;
+        private List<TypeDefinition.Builder>       interfaces;
+        private List<TypeDefinition.Builder>       possibleTypes;
         private List<EnumValue.Builder>  enumValues;
-        private Type.Builder             ofType;
+        private TypeDefinition.Builder             ofType;
         private List<InputValue.Builder> inputFields;
 
         protected Builder() {
@@ -218,7 +222,7 @@ public class Type {
             inputFields = new ArrayList<>();
         }
 
-        public Type build() {
+        public TypeDefinition build() {
             if (cachedBuild != null) {
                 return cachedBuild;
             }
@@ -240,7 +244,7 @@ public class Type {
                 return cachedBuild;
             }
             case UNION: {
-                List<Type> possibleTypes = this.possibleTypes.stream().map(builder -> builder.build()).collect(Collectors.toList());
+                List<TypeDefinition> possibleTypes = this.possibleTypes.stream().map(builder -> builder.build()).collect(Collectors.toList());
                 cachedBuild = new UnionType(kind, name, description, possibleTypes);
                 return cachedBuild;
             }
@@ -255,12 +259,12 @@ public class Type {
                 return cachedBuild;
             }
             case LIST: {
-                Type ofType = this.ofType.build();
+                TypeDefinition ofType = this.ofType.build();
                 cachedBuild = new ListType(kind, name, description, ofType);
                 return cachedBuild;
             }
             case NON_NULL: {
-                Type ofType = this.ofType.build();
+                TypeDefinition ofType = this.ofType.build();
                 cachedBuild = new NonNullType(kind, name, description, ofType);
                 return cachedBuild;
             }
@@ -310,21 +314,21 @@ public class Type {
             return this;
         }
 
-        public List<Type.Builder> interfaces() {
+        public List<TypeDefinition.Builder> interfaces() {
             return interfaces;
         }
 
-        public Builder interfaces(List<Type.Builder> interfaces) {
+        public Builder interfaces(List<TypeDefinition.Builder> interfaces) {
             assert cachedBuild == null;
             this.interfaces = interfaces;
             return this;
         }
 
-        public List<Type.Builder> possibleTypes() {
+        public List<TypeDefinition.Builder> possibleTypes() {
             return possibleTypes;
         }
 
-        public Builder possibleTypes(List<Type.Builder> possibleTypes) {
+        public Builder possibleTypes(List<TypeDefinition.Builder> possibleTypes) {
             assert cachedBuild == null;
             this.possibleTypes = possibleTypes;
             return this;
@@ -340,11 +344,11 @@ public class Type {
             return this;
         }
 
-        public Type.Builder ofType() {
+        public TypeDefinition.Builder ofType() {
             return ofType;
         }
 
-        public Builder ofType(Type.Builder ofType) {
+        public Builder ofType(TypeDefinition.Builder ofType) {
             assert cachedBuild == null;
             this.ofType = ofType;
             return this;

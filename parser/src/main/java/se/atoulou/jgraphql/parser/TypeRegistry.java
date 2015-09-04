@@ -5,32 +5,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.models.schema.Type;
-import se.atoulou.jgraphql.models.schema.Type.TypeKind;
+import se.atoulou.jgraphql.models.query.TypeDefinition;
+import se.atoulou.jgraphql.models.query.TypeDefinition.TypeKind;
 
 public class TypeRegistry {
-    protected Map<String, Type.Builder> types;
+    protected Map<String, TypeDefinition.Builder> types;
 
     public TypeRegistry() {
         types = new HashMap<>();
     }
 
-    Type.Builder registerUsage(String typeName) {
+    TypeDefinition.Builder registerUsage(String typeName) {
         assert typeName != null;
-        Type.Builder typeB = this.types.get(typeName);
+        TypeDefinition.Builder typeB = this.types.get(typeName);
         if (typeB == null) {
-            typeB = Type.builder();
+            typeB = TypeDefinition.builder();
             typeB.name(typeName);
             this.types.put(typeName, typeB);
         }
         return typeB;
     }
 
-    Type.Builder registerDeclaration(String typeName, TypeKind kind) {
+    TypeDefinition.Builder registerDeclaration(String typeName, TypeKind kind) {
         assert typeName != null;
-        Type.Builder typeB = this.types.get(typeName);
+        TypeDefinition.Builder typeB = this.types.get(typeName);
         if (typeB == null) {
-            typeB = Type.builder();
+            typeB = TypeDefinition.builder();
             this.types.put(typeName, typeB);
         }
 
@@ -42,11 +42,11 @@ public class TypeRegistry {
     }
 
     public void reconcilePossibleTypes() {
-        List<Type.Builder> objects = types.values().stream().filter(typeB -> typeB.kind() == TypeKind.OBJECT).collect(Collectors.toList());
+        List<TypeDefinition.Builder> objects = types.values().stream().filter(typeB -> typeB.kind() == TypeKind.OBJECT).collect(Collectors.toList());
 
-        for (Type.Builder typeB : objects) {
-            List<Type.Builder> implementedTypes = typeB.interfaces();
-            for (Type.Builder implementedType : implementedTypes) {
+        for (TypeDefinition.Builder typeB : objects) {
+            List<TypeDefinition.Builder> implementedTypes = typeB.interfaces();
+            for (TypeDefinition.Builder implementedType : implementedTypes) {
                 assert implementedType.kind() == TypeKind.INTERFACE;
                 if (!implementedType.possibleTypes().contains(typeB)) {
                     implementedType.possibleTypes().add(typeB);

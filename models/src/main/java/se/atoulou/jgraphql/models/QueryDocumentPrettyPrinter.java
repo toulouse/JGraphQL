@@ -4,14 +4,14 @@ import java.util.List;
 
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
+import se.atoulou.jgraphql.models.query.Document;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
-import se.atoulou.jgraphql.models.query.QueryDocument;
 import se.atoulou.jgraphql.models.query.Selection;
-import se.atoulou.jgraphql.models.query.VariableDefinition;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
 import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
 import se.atoulou.jgraphql.models.query.Selection.SelectionField;
+import se.atoulou.jgraphql.models.query.VariableDefinition;
 import se.atoulou.jgraphql.models.transform.QueryDocumentBaseVisitor;
 import se.atoulou.jgraphql.models.transform.QueryDocumentMessageWriter;
 
@@ -21,7 +21,7 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
     private final boolean isCompact;
 
     @Override
-    public String writeQueryDocument(QueryDocument queryDocument) {
+    public String writeQueryDocument(Document queryDocument) {
         StringBuilderVisitorContext context = new StringBuilderVisitorContext(newline, tab, isCompact);
         visitQueryDocument(queryDocument, context);
         return context.getStringBuilder().toString();
@@ -46,7 +46,7 @@ public final class QueryDocumentPrettyPrinter extends QueryDocumentBaseVisitor<S
     }
 
     @Override
-    public void punctuateQueryDocument(QueryDocument queryDocument, StringBuilderVisitorContext context) {
+    public void punctuateQueryDocument(Document queryDocument, StringBuilderVisitorContext context) {
         context.appendNewlines(2);
     }
 

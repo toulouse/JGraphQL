@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import se.atoulou.jgraphql.models.query.TypeDefinition;
+
 public class Field {
     private final String           name;
     private final String           description;
@@ -54,7 +56,7 @@ public class Field {
         private String                   name;
         private String                   description;
         private List<InputValue.Builder> arguments;
-        private Type.Builder             type;
+        private TypeDefinition.Builder   type;
         private Boolean                  isDeprecated;
         private String                   deprecationReason;
 
@@ -94,11 +96,11 @@ public class Field {
             return this;
         }
 
-        public Type.Builder type() {
+        public TypeDefinition.Builder type() {
             return type;
         }
 
-        public Builder type(Type.Builder type) {
+        public Builder type(TypeDefinition.Builder type) {
             this.type = type;
             return this;
         }
