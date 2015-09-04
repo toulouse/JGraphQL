@@ -4,15 +4,14 @@ import java.util.List;
 
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
+import se.atoulou.jgraphql.models.query.Document;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
-import se.atoulou.jgraphql.models.query.Document;
 import se.atoulou.jgraphql.models.query.Selection;
-import se.atoulou.jgraphql.models.query.TypeDefinition;
-import se.atoulou.jgraphql.models.query.VariableDefinition;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
 import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
 import se.atoulou.jgraphql.models.query.Selection.SelectionField;
+import se.atoulou.jgraphql.models.query.TypeDefinition;
 import se.atoulou.jgraphql.models.query.TypeDefinition.EnumType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.InputObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.InterfaceType;
@@ -21,34 +20,34 @@ import se.atoulou.jgraphql.models.query.TypeDefinition.NonNullType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.ObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.ScalarType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.UnionType;
+import se.atoulou.jgraphql.models.query.VariableDefinition;
 import se.atoulou.jgraphql.models.schema.EnumValue;
 import se.atoulou.jgraphql.models.schema.Field;
 import se.atoulou.jgraphql.models.schema.InputValue;
-import se.atoulou.jgraphql.models.schema.Schema;
 
 public class DocumentBaseVisitor<T extends VisitorContext<T>> implements DocumentVisitor<T>, DocumentVisitorActions<T> {
 
     @Override
-    public void visitQueryDocument(Document queryDocument, T context) {
-        beforeQueryDocument(queryDocument, context);
+    public void visitDocument(Document document, T context) {
+        beforeDocument(document, context);
 
-        List<OperationDefinition> operations = queryDocument.getOperations();
+        List<OperationDefinition> operations = document.getOperations();
         if (!operations.isEmpty()) {
             context.enter();
             for (OperationDefinition operation : operations) {
                 context.incrementIndex();
                 if (context.currentIndex() >= 1) {
-                    punctuateQueryDocument(queryDocument, context);
+                    punctuateDocument(document, context);
                 }
                 visitOperation(operation, context);
             }
             context.leave();
         }
 
-        List<FragmentDefinition> fragments = queryDocument.getFragments();
+        List<FragmentDefinition> fragments = document.getFragments();
         if (!fragments.isEmpty()) {
             if (!operations.isEmpty()) {
-                punctuateQueryDocument(queryDocument, context);
+                punctuateDocument(document, context);
             }
 
             context.enter();
@@ -56,14 +55,29 @@ public class DocumentBaseVisitor<T extends VisitorContext<T>> implements Documen
                 context.incrementIndex();
 
                 if (context.currentIndex() >= 1) {
-                    punctuateQueryDocument(queryDocument, context);
+                    punctuateDocument(document, context);
                 }
                 visitFragment(fragment, context);
             }
             context.leave();
         }
 
-        afterQueryDocument(queryDocument, context);
+        List<TypeDefinition> types = document.getTypes();
+        if (!types.isEmpty()) {
+            context.enter();
+            for (TypeDefinition type : document.getTypes()) {
+                context.incrementIndex();
+
+                if (context.currentIndex() >= 1) {
+                    punctuateDocument(document, context);
+                }
+
+                visitType(type, context);
+            }
+            context.leave();
+        }
+
+        afterDocument(document, context);
     }
 
     @Override
@@ -229,28 +243,6 @@ public class DocumentBaseVisitor<T extends VisitorContext<T>> implements Documen
         visitSelectionSet(selectionField.getSelectionSet(), context);
 
         afterSelectionField(selectionField, context);
-    }
-
-    @Override
-    public void visitSchema(Schema schema, T context) {
-        beforeSchema(schema, context);
-
-        List<TypeDefinition> types = schema.getTypes();
-        if (!types.isEmpty()) {
-            context.enter();
-            for (TypeDefinition type : schema.getTypes()) {
-                context.incrementIndex();
-
-                if (context.currentIndex() >= 1) {
-                    punctuateSchema(schema, context);
-                }
-
-                visitType(type, context);
-            }
-            context.leave();
-        }
-
-        afterSchema(schema, context);
     }
 
     @Override
@@ -438,15 +430,15 @@ public class DocumentBaseVisitor<T extends VisitorContext<T>> implements Documen
     }
 
     @Override
-    public void beforeQueryDocument(Document queryDocument, T context) {
+    public void beforeDocument(Document document, T context) {
     }
 
     @Override
-    public void punctuateQueryDocument(Document queryDocument, T context) {
+    public void punctuateDocument(Document document, T context) {
     }
 
     @Override
-    public void afterQueryDocument(Document queryDocument, T context) {
+    public void afterDocument(Document document, T context) {
     }
 
     @Override
@@ -559,18 +551,6 @@ public class DocumentBaseVisitor<T extends VisitorContext<T>> implements Documen
 
     @Override
     public void afterSelectionField(SelectionField selectionField, T context) {
-    }
-
-    @Override
-    public void beforeSchema(Schema schema, T context) {
-    }
-
-    @Override
-    public void punctuateSchema(Schema schema, T context) {
-    }
-
-    @Override
-    public void afterSchema(Schema schema, T context) {
     }
 
     @Override

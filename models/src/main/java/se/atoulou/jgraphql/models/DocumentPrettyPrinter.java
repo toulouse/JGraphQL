@@ -9,21 +9,20 @@ import se.atoulou.jgraphql.models.query.Document;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
 import se.atoulou.jgraphql.models.query.Selection;
-import se.atoulou.jgraphql.models.query.TypeDefinition;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
 import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
 import se.atoulou.jgraphql.models.query.Selection.SelectionField;
+import se.atoulou.jgraphql.models.query.TypeDefinition;
 import se.atoulou.jgraphql.models.query.TypeDefinition.EnumType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.InputObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.InterfaceType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.ObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.ScalarType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.UnionType;
+import se.atoulou.jgraphql.models.query.VariableDefinition;
 import se.atoulou.jgraphql.models.schema.EnumValue;
 import se.atoulou.jgraphql.models.schema.Field;
 import se.atoulou.jgraphql.models.schema.InputValue;
-import se.atoulou.jgraphql.models.schema.Schema;
-import se.atoulou.jgraphql.models.query.VariableDefinition;
 import se.atoulou.jgraphql.models.transform.DocumentBaseVisitor;
 import se.atoulou.jgraphql.models.transform.DocumentMessageWriter;
 
@@ -35,7 +34,7 @@ public final class DocumentPrettyPrinter extends DocumentBaseVisitor<StringBuild
     @Override
     public String writeDocument(Document document) {
         StringBuilderVisitorContext context = new StringBuilderVisitorContext(newline, tab, isCompact);
-        visitQueryDocument(document, context);
+        visitDocument(document, context);
         return context.getStringBuilder().toString();
     }
 
@@ -58,7 +57,7 @@ public final class DocumentPrettyPrinter extends DocumentBaseVisitor<StringBuild
     }
 
     @Override
-    public void punctuateQueryDocument(Document queryDocument, StringBuilderVisitorContext context) {
+    public void punctuateDocument(Document queryDocument, StringBuilderVisitorContext context) {
         context.appendNewlines(2);
     }
 
@@ -241,11 +240,6 @@ public final class DocumentPrettyPrinter extends DocumentBaseVisitor<StringBuild
 
         String name = selectionField.getName();
         context.append(name);
-    }
-
-    @Override
-    public void punctuateSchema(Schema schema, StringBuilderVisitorContext context) {
-        context.appendNewlines(2);
     }
 
     @Override

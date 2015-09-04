@@ -4,15 +4,14 @@ import java.util.List;
 
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
+import se.atoulou.jgraphql.models.query.Document;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
-import se.atoulou.jgraphql.models.query.Document;
 import se.atoulou.jgraphql.models.query.Selection;
-import se.atoulou.jgraphql.models.query.TypeDefinition;
-import se.atoulou.jgraphql.models.query.VariableDefinition;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
 import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
 import se.atoulou.jgraphql.models.query.Selection.SelectionField;
+import se.atoulou.jgraphql.models.query.TypeDefinition;
 import se.atoulou.jgraphql.models.query.TypeDefinition.EnumType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.InputObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.InterfaceType;
@@ -21,18 +20,18 @@ import se.atoulou.jgraphql.models.query.TypeDefinition.NonNullType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.ObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.ScalarType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.UnionType;
+import se.atoulou.jgraphql.models.query.VariableDefinition;
 import se.atoulou.jgraphql.models.schema.EnumValue;
 import se.atoulou.jgraphql.models.schema.Field;
 import se.atoulou.jgraphql.models.schema.InputValue;
-import se.atoulou.jgraphql.models.schema.Schema;
 
 public interface DocumentVisitorActions<T extends VisitorContext<T>> extends DocumentVisitor<T> {
 
-    void beforeQueryDocument(Document queryDocument, T context);
+    void beforeDocument(Document document, T context);
 
-    void punctuateQueryDocument(Document queryDocument, T context);
+    void punctuateDocument(Document document, T context);
 
-    void afterQueryDocument(Document queryDocument, T context);
+    void afterDocument(Document document, T context);
 
     void beforeOperation(OperationDefinition operation, T context);
 
@@ -89,12 +88,6 @@ public interface DocumentVisitorActions<T extends VisitorContext<T>> extends Doc
     void beforeSelectionField(SelectionField selectionField, T context);
 
     void afterSelectionField(SelectionField selectionField, T context);
-
-    void beforeSchema(Schema schema, T context);
-
-    void punctuateSchema(Schema schema, T context);
-
-    void afterSchema(Schema schema, T context);
 
     void beforeType(TypeDefinition type, T context);
 
