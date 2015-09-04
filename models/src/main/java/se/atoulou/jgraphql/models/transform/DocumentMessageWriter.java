@@ -2,6 +2,6 @@ package se.atoulou.jgraphql.models.transform;
 
 import se.atoulou.jgraphql.models.query.Document;
 
-public interface QueryDocumentMessageReader<T> {
-    public Document readQueryDocument(T message);
+public interface DocumentMessageWriter<T> {
+    public T writeDocument(Document document);
 }

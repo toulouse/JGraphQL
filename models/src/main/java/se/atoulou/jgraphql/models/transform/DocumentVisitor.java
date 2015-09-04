@@ -2,7 +2,17 @@ package se.atoulou.jgraphql.models.transform;
 
 import java.util.List;
 
+import se.atoulou.jgraphql.models.query.Argument;
+import se.atoulou.jgraphql.models.query.Directive;
+import se.atoulou.jgraphql.models.query.FragmentDefinition;
+import se.atoulou.jgraphql.models.query.OperationDefinition;
+import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.query.Selection;
 import se.atoulou.jgraphql.models.query.TypeDefinition;
+import se.atoulou.jgraphql.models.query.VariableDefinition;
+import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
+import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
+import se.atoulou.jgraphql.models.query.Selection.SelectionField;
 import se.atoulou.jgraphql.models.query.TypeDefinition.EnumType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.InputObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.InterfaceType;
@@ -16,7 +26,33 @@ import se.atoulou.jgraphql.models.schema.Field;
 import se.atoulou.jgraphql.models.schema.InputValue;
 import se.atoulou.jgraphql.models.schema.Schema;
 
-public interface SchemaVisitor<T extends VisitorContext<T>> {
+public interface DocumentVisitor<T extends VisitorContext<T>> {
+    void visitQueryDocument(Document queryDocument, T context);
+
+    void visitOperation(OperationDefinition operation, T context);
+
+    void visitFragment(FragmentDefinition fragment, T context);
+
+    void visitDirectives(List<Directive> directives, T context);
+
+    void visitDirective(Directive directive, T context);
+
+    void visitArguments(List<Argument> arguments, T context);
+
+    void visitArgument(Argument argument, T context);
+
+    void visitVariableDefinitions(List<VariableDefinition> variableDefinitions, T context);
+
+    void visitVariableDefinition(VariableDefinition variableDefinition, T context);
+
+    void visitSelectionSet(List<Selection> selectionSet, T context);
+
+    void visitInlineFragment(InlineFragment inlineFragment, T context);
+
+    void visitFragmentSpread(FragmentSpread fragmentSpread, T context);
+
+    void visitSelectionField(SelectionField selectionField, T context);
+
     void visitSchema(Schema schema, T context);
 
     void visitType(TypeDefinition type, T context);
@@ -48,4 +84,5 @@ public interface SchemaVisitor<T extends VisitorContext<T>> {
     void visitFields(List<Field> fields, T context);
 
     void visitField(Field field, T context);
+
 }
