@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public class Directive {
     private final String           name;
     private final String           description;
-    private final List<InputValue> args;
+    private final List<InputValue> arguments;
     private final Boolean          onOperation;
     private final Boolean          onFragment;
     private final Boolean          onField;
@@ -16,10 +16,10 @@ public class Directive {
         return new Builder();
     }
 
-    protected Directive(String name, String description, List<InputValue> args, Boolean onOperation, Boolean onFragment, Boolean onField) {
+    protected Directive(String name, String description, List<InputValue> arguments, Boolean onOperation, Boolean onFragment, Boolean onField) {
         this.name = name;
         this.description = description;
-        this.args = args;
+        this.arguments = arguments;
         this.onOperation = onOperation;
         this.onFragment = onFragment;
         this.onField = onField;
@@ -33,8 +33,8 @@ public class Directive {
         return description;
     }
 
-    public List<InputValue> getArgs() {
-        return args;
+    public List<InputValue> getArguments() {
+        return arguments;
     }
 
     public Boolean getOnOperation() {
@@ -52,18 +52,22 @@ public class Directive {
     public static class Builder {
         private String                   name;
         private String                   description;
-        private List<InputValue.Builder> args;
+        private List<InputValue.Builder> arguments;
         private Boolean                  onOperation;
         private Boolean                  onFragment;
         private Boolean                  onField;
 
         protected Builder() {
-            args = new ArrayList<>();
+            arguments = new ArrayList<>();
         }
 
         public Directive build() {
-            List<InputValue> args = this.args.stream().map(builder -> builder.build()).collect(Collectors.toList());
-            return new Directive(name, description, args, onOperation, onFragment, onField);
+            List<InputValue> arguments = this.arguments.stream().map(builder -> builder.build()).collect(Collectors.toList());
+            return new Directive(name, description, arguments, onOperation, onFragment, onField);
+        }
+
+        public String name() {
+            return name;
         }
 
         public Builder name(String name) {
@@ -71,14 +75,26 @@ public class Directive {
             return this;
         }
 
+        public String description() {
+            return description;
+        }
+
         public Builder description(String description) {
             this.description = description;
             return this;
         }
 
-        public Builder args(List<InputValue.Builder> args) {
-            this.args = args;
+        public List<InputValue.Builder> arguments() {
+            return arguments;
+        }
+
+        public Builder arguments(List<InputValue.Builder> arguments) {
+            this.arguments = arguments;
             return this;
+        }
+
+        public Boolean onOperation() {
+            return onOperation;
         }
 
         public Builder onOperation(Boolean onOperation) {
@@ -86,9 +102,17 @@ public class Directive {
             return this;
         }
 
+        public Boolean onFragment() {
+            return onFragment;
+        }
+
         public Builder onFragment(Boolean onFragment) {
             this.onFragment = onFragment;
             return this;
+        }
+
+        public Boolean onField() {
+            return onField;
         }
 
         public Builder onField(Boolean onField) {
@@ -99,7 +123,7 @@ public class Directive {
 
     @Override
     public String toString() {
-        return "Directive [args=" + args + ", description=" + description + ", name=" + name + ", onField=" + onField + ", onFragment=" + onFragment
+        return "Directive [args=" + arguments + ", description=" + description + ", name=" + name + ", onField=" + onField + ", onFragment=" + onFragment
                 + ", onOperation=" + onOperation + "]";
     }
 }
