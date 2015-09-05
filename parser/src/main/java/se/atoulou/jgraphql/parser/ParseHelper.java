@@ -7,7 +7,7 @@ import java.io.Reader;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.Document;
 import se.atoulou.jgraphql.parser.antlr.GraphQLLexer;
 import se.atoulou.jgraphql.parser.antlr.GraphQLParser;
 

@@ -2,28 +2,28 @@ package se.atoulou.jgraphql.models.transform;
 
 import java.util.List;
 
-import se.atoulou.jgraphql.models.query.Argument;
-import se.atoulou.jgraphql.models.query.Directive;
-import se.atoulou.jgraphql.models.query.Document;
-import se.atoulou.jgraphql.models.query.EnumValue;
-import se.atoulou.jgraphql.models.query.FieldDefinition;
-import se.atoulou.jgraphql.models.query.FragmentDefinition;
-import se.atoulou.jgraphql.models.query.InputValue;
-import se.atoulou.jgraphql.models.query.OperationDefinition;
-import se.atoulou.jgraphql.models.query.Selection;
-import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
-import se.atoulou.jgraphql.models.query.Selection.InlineFragment;
-import se.atoulou.jgraphql.models.query.Selection.SelectionField;
-import se.atoulou.jgraphql.models.query.TypeDefinition;
-import se.atoulou.jgraphql.models.query.TypeDefinition.EnumType;
-import se.atoulou.jgraphql.models.query.TypeDefinition.InputObjectType;
-import se.atoulou.jgraphql.models.query.TypeDefinition.InterfaceType;
-import se.atoulou.jgraphql.models.query.TypeDefinition.ListType;
-import se.atoulou.jgraphql.models.query.TypeDefinition.NonNullType;
-import se.atoulou.jgraphql.models.query.TypeDefinition.ObjectType;
-import se.atoulou.jgraphql.models.query.TypeDefinition.ScalarType;
-import se.atoulou.jgraphql.models.query.TypeDefinition.UnionType;
-import se.atoulou.jgraphql.models.query.VariableDefinition;
+import se.atoulou.jgraphql.models.Argument;
+import se.atoulou.jgraphql.models.Directive;
+import se.atoulou.jgraphql.models.Document;
+import se.atoulou.jgraphql.models.EnumValue;
+import se.atoulou.jgraphql.models.FieldDefinition;
+import se.atoulou.jgraphql.models.FragmentDefinition;
+import se.atoulou.jgraphql.models.InputValue;
+import se.atoulou.jgraphql.models.OperationDefinition;
+import se.atoulou.jgraphql.models.Selection;
+import se.atoulou.jgraphql.models.TypeDefinition;
+import se.atoulou.jgraphql.models.VariableDefinition;
+import se.atoulou.jgraphql.models.Selection.FragmentSpread;
+import se.atoulou.jgraphql.models.Selection.InlineFragment;
+import se.atoulou.jgraphql.models.Selection.SelectionField;
+import se.atoulou.jgraphql.models.TypeDefinition.EnumType;
+import se.atoulou.jgraphql.models.TypeDefinition.InputObjectType;
+import se.atoulou.jgraphql.models.TypeDefinition.InterfaceType;
+import se.atoulou.jgraphql.models.TypeDefinition.ListType;
+import se.atoulou.jgraphql.models.TypeDefinition.NonNullType;
+import se.atoulou.jgraphql.models.TypeDefinition.ObjectType;
+import se.atoulou.jgraphql.models.TypeDefinition.ScalarType;
+import se.atoulou.jgraphql.models.TypeDefinition.UnionType;
 
 public interface DocumentVisitorActions<T extends VisitorContext<T>> extends DocumentVisitor<T> {
 

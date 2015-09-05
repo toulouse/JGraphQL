@@ -1,10 +1,8 @@
-package se.atoulou.jgraphql.models.query;
+package se.atoulou.jgraphql.models;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import se.atoulou.jgraphql.models.query.InputValue.Builder;
 
 public class DirectiveDefinition {
     private final String           name;

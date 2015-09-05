@@ -1,4 +1,4 @@
-package se.atoulou.jgraphql.models.query;
+package se.atoulou.jgraphql.models;
 
 public class Argument {
     private final String name;

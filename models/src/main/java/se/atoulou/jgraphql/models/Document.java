@@ -1,4 +1,4 @@
-package se.atoulou.jgraphql.models.query;
+package se.atoulou.jgraphql.models;
 
 import java.util.ArrayList;
 import java.util.List;

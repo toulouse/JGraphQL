@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.models.query.TypeDefinition;
-import se.atoulou.jgraphql.models.query.TypeDefinition.TypeKind;
+import se.atoulou.jgraphql.models.TypeDefinition;
+import se.atoulou.jgraphql.models.TypeDefinition.TypeKind;
 
 public class TypeRegistry {
     protected Map<String, TypeDefinition.Builder> types;
