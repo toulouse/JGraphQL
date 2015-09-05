@@ -72,7 +72,7 @@ public class DocumentBaseVisitor<T extends VisitorContext<T>> implements Documen
                     punctuateDocument(document, context);
                 }
 
-                visitType(type, context);
+                visitTypeDefinition(type, context);
             }
             context.leave();
         }
@@ -246,7 +246,7 @@ public class DocumentBaseVisitor<T extends VisitorContext<T>> implements Documen
     }
 
     @Override
-    public void visitType(TypeDefinition type, T context) {
+    public void visitTypeDefinition(TypeDefinition type, T context) {
         beforeType(type, context);
 
         switch (type.getKind()) {

@@ -52,7 +52,7 @@ public interface DocumentVisitor<T extends VisitorContext<T>> {
 
     void visitSelectionField(SelectionField selectionField, T context);
 
-    void visitType(TypeDefinition type, T context);
+    void visitTypeDefinition(TypeDefinition type, T context);
 
     void visitEnum(EnumType enumType, T context);
 
@@ -81,5 +81,4 @@ public interface DocumentVisitor<T extends VisitorContext<T>> {
     void visitFields(List<Field> fields, T context);
 
     void visitField(Field field, T context);
-
 }
