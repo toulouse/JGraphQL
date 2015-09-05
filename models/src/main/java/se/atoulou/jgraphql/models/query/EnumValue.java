@@ -1,4 +1,4 @@
-package se.atoulou.jgraphql.models.schema;
+package se.atoulou.jgraphql.models.query;
 
 public class EnumValue {
     private final String  name;

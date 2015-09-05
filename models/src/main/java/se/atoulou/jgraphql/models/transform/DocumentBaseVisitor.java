@@ -5,7 +5,10 @@ import java.util.List;
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
 import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.query.EnumValue;
+import se.atoulou.jgraphql.models.query.FieldDefinition;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
+import se.atoulou.jgraphql.models.query.InputValue;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
 import se.atoulou.jgraphql.models.query.Selection;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
@@ -21,9 +24,6 @@ import se.atoulou.jgraphql.models.query.TypeDefinition.ObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.ScalarType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.UnionType;
 import se.atoulou.jgraphql.models.query.VariableDefinition;
-import se.atoulou.jgraphql.models.schema.EnumValue;
-import se.atoulou.jgraphql.models.schema.Field;
-import se.atoulou.jgraphql.models.schema.InputValue;
 
 public class DocumentBaseVisitor<T extends VisitorContext<T>> implements DocumentVisitor<T>, DocumentVisitorActions<T> {
 
@@ -401,12 +401,12 @@ public class DocumentBaseVisitor<T extends VisitorContext<T>> implements Documen
     }
 
     @Override
-    public void visitFields(List<Field> fields, T context) {
+    public void visitFields(List<FieldDefinition> fields, T context) {
         beforeFields(fields, context);
 
         context.enter();
         if (!fields.isEmpty()) {
-            for (Field field : fields) {
+            for (FieldDefinition field : fields) {
                 context.incrementIndex();
 
                 if (context.currentIndex() >= 1) {
@@ -421,7 +421,7 @@ public class DocumentBaseVisitor<T extends VisitorContext<T>> implements Documen
     }
 
     @Override
-    public void visitField(Field field, T context) {
+    public void visitField(FieldDefinition field, T context) {
         beforeField(field, context);
 
         visitInputValues(field.getArguments(), context);
@@ -670,22 +670,22 @@ public class DocumentBaseVisitor<T extends VisitorContext<T>> implements Documen
     }
 
     @Override
-    public void beforeFields(List<Field> fields, T context) {
+    public void beforeFields(List<FieldDefinition> fields, T context) {
     }
 
     @Override
-    public void punctuateFields(List<Field> fields, T context) {
+    public void punctuateFields(List<FieldDefinition> fields, T context) {
     }
 
     @Override
-    public void afterFields(List<Field> fields, T context) {
+    public void afterFields(List<FieldDefinition> fields, T context) {
     }
 
     @Override
-    public void beforeField(Field field, T context) {
+    public void beforeField(FieldDefinition field, T context) {
     }
 
     @Override
-    public void afterField(Field field, T context) {
+    public void afterField(FieldDefinition field, T context) {
     }
 }

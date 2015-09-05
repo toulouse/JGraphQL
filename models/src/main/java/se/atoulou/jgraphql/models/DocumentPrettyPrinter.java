@@ -6,7 +6,10 @@ import java.util.stream.Collectors;
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
 import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.query.EnumValue;
+import se.atoulou.jgraphql.models.query.FieldDefinition;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
+import se.atoulou.jgraphql.models.query.InputValue;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
 import se.atoulou.jgraphql.models.query.Selection;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
@@ -20,9 +23,6 @@ import se.atoulou.jgraphql.models.query.TypeDefinition.ObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.ScalarType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.UnionType;
 import se.atoulou.jgraphql.models.query.VariableDefinition;
-import se.atoulou.jgraphql.models.schema.EnumValue;
-import se.atoulou.jgraphql.models.schema.Field;
-import se.atoulou.jgraphql.models.schema.InputValue;
 import se.atoulou.jgraphql.models.transform.DocumentBaseVisitor;
 import se.atoulou.jgraphql.models.transform.DocumentMessageWriter;
 
@@ -419,7 +419,7 @@ public final class DocumentPrettyPrinter extends DocumentBaseVisitor<StringBuild
     }
 
     @Override
-    public void beforeField(Field field, StringBuilderVisitorContext context) {
+    public void beforeField(FieldDefinition field, StringBuilderVisitorContext context) {
         context.append(field.getName());
 
         if (!field.getArguments().isEmpty()) {
@@ -429,14 +429,14 @@ public final class DocumentPrettyPrinter extends DocumentBaseVisitor<StringBuild
     }
 
     @Override
-    public void punctuateFields(List<Field> fields, StringBuilderVisitorContext context) {
+    public void punctuateFields(List<FieldDefinition> fields, StringBuilderVisitorContext context) {
         context.append(',');
         context.appendNewline();
         context.appendTabs();
     }
 
     @Override
-    public void afterField(Field field, StringBuilderVisitorContext context) {
+    public void afterField(FieldDefinition field, StringBuilderVisitorContext context) {
         if (!field.getArguments().isEmpty()) {
             context.append(')');
             context.setNewlinesEnabled(true);

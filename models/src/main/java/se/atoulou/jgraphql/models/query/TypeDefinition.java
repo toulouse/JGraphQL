@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.models.schema.EnumValue;
-import se.atoulou.jgraphql.models.schema.Field;
-import se.atoulou.jgraphql.models.schema.InputValue;
-
 public class TypeDefinition {
     public static enum TypeKind {
         SCALAR,
@@ -67,16 +63,16 @@ public class TypeDefinition {
     }
 
     public static class InterfaceType extends TypeDefinition {
-        private final List<Field>  fields;
-        private final List<String> possibleTypes;
+        private final List<FieldDefinition> fields;
+        private final List<String>          possibleTypes;
 
-        public InterfaceType(TypeKind kind, String name, String description, List<Field> fields, List<String> possibleTypes) {
+        public InterfaceType(TypeKind kind, String name, String description, List<FieldDefinition> fields, List<String> possibleTypes) {
             super(kind, name, description);
             this.fields = fields;
             this.possibleTypes = possibleTypes;
         }
 
-        public List<Field> getFields() {
+        public List<FieldDefinition> getFields() {
             return fields;
         }
 
@@ -147,16 +143,16 @@ public class TypeDefinition {
     }
 
     public static class ObjectType extends TypeDefinition {
-        private final List<Field>  fields;
-        private final List<String> interfaces;
+        private final List<FieldDefinition> fields;
+        private final List<String>          interfaces;
 
-        public ObjectType(TypeKind kind, String name, String description, List<Field> fields, List<String> interfaces) {
+        public ObjectType(TypeKind kind, String name, String description, List<FieldDefinition> fields, List<String> interfaces) {
             super(kind, name, description);
             this.fields = fields;
             this.interfaces = interfaces;
         }
 
-        public List<Field> getFields() {
+        public List<FieldDefinition> getFields() {
             return fields;
         }
 
@@ -204,15 +200,15 @@ public class TypeDefinition {
     public static class Builder {
         private TypeDefinition cachedBuild;
 
-        private TypeKind                 kind;
-        private String                   name;
-        private String                   description;
-        private List<Field.Builder>      fields;
-        private List<TypeDefinition.Builder>       interfaces;
-        private List<TypeDefinition.Builder>       possibleTypes;
-        private List<EnumValue.Builder>  enumValues;
-        private TypeDefinition.Builder             ofType;
-        private List<InputValue.Builder> inputFields;
+        private TypeKind                      kind;
+        private String                        name;
+        private String                        description;
+        private List<FieldDefinition.Builder> fields;
+        private List<TypeDefinition.Builder>  interfaces;
+        private List<TypeDefinition.Builder>  possibleTypes;
+        private List<EnumValue.Builder>       enumValues;
+        private TypeDefinition.Builder        ofType;
+        private List<InputValue.Builder>      inputFields;
 
         protected Builder() {
             fields = new ArrayList<>();
@@ -232,13 +228,13 @@ public class TypeDefinition {
                 cachedBuild = new ScalarType(kind, name, description);
                 return cachedBuild;
             case OBJECT: {
-                List<Field> fields = this.fields.stream().map(builder -> builder.build()).collect(Collectors.toList());
+                List<FieldDefinition> fields = this.fields.stream().map(builder -> builder.build()).collect(Collectors.toList());
                 List<String> interfaces = this.interfaces.stream().map(builder -> builder.name()).collect(Collectors.toList());
                 cachedBuild = new ObjectType(kind, name, description, fields, interfaces);
                 return cachedBuild;
             }
             case INTERFACE: {
-                List<Field> fields = this.fields.stream().map(builder -> builder.build()).collect(Collectors.toList());
+                List<FieldDefinition> fields = this.fields.stream().map(builder -> builder.build()).collect(Collectors.toList());
                 List<String> possibleTypes = this.possibleTypes.stream().map(builder -> builder.name()).collect(Collectors.toList());
                 cachedBuild = new InterfaceType(kind, name, description, fields, possibleTypes);
                 return cachedBuild;
@@ -304,11 +300,11 @@ public class TypeDefinition {
             return this;
         }
 
-        public List<Field.Builder> fields() {
+        public List<FieldDefinition.Builder> fields() {
             return fields;
         }
 
-        public Builder fields(List<Field.Builder> fields) {
+        public Builder fields(List<FieldDefinition.Builder> fields) {
             assert cachedBuild == null;
             this.fields = fields;
             return this;

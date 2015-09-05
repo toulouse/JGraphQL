@@ -11,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
 import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.query.EnumValue;
+import se.atoulou.jgraphql.models.query.FieldDefinition;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
+import se.atoulou.jgraphql.models.query.InputValue;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
 import se.atoulou.jgraphql.models.query.OperationDefinition.OperationType;
 import se.atoulou.jgraphql.models.query.Selection;
@@ -20,9 +23,6 @@ import se.atoulou.jgraphql.models.query.TypeDefinition;
 import se.atoulou.jgraphql.models.query.TypeDefinition.TypeKind;
 import se.atoulou.jgraphql.models.query.Value;
 import se.atoulou.jgraphql.models.query.VariableDefinition;
-import se.atoulou.jgraphql.models.schema.EnumValue;
-import se.atoulou.jgraphql.models.schema.Field;
-import se.atoulou.jgraphql.models.schema.InputValue;
 import se.atoulou.jgraphql.parser.antlr.GraphQLBaseVisitor;
 import se.atoulou.jgraphql.parser.antlr.GraphQLParser.AliasContext;
 import se.atoulou.jgraphql.parser.antlr.GraphQLParser.ArgumentContext;
@@ -119,8 +119,8 @@ public class GraphQLVisitor extends GraphQLBaseVisitor<Void> {
 
         for (FieldDefinitionContext fieldDefinition : ctx.fieldDefinition()) {
             visitFieldDefinition(fieldDefinition);
-            assert this.previousObject instanceof Field.Builder;
-            Field.Builder fieldB = (Field.Builder) this.previousObject;
+            assert this.previousObject instanceof FieldDefinition.Builder;
+            FieldDefinition.Builder fieldB = (FieldDefinition.Builder) this.previousObject;
             typeB.fields().add(fieldB);
         }
 
@@ -141,8 +141,8 @@ public class GraphQLVisitor extends GraphQLBaseVisitor<Void> {
 
         for (FieldDefinitionContext fieldDefinition : ctx.fieldDefinition()) {
             visitFieldDefinition(fieldDefinition);
-            assert this.previousObject instanceof Field.Builder;
-            Field.Builder fieldB = (Field.Builder) this.previousObject;
+            assert this.previousObject instanceof FieldDefinition.Builder;
+            FieldDefinition.Builder fieldB = (FieldDefinition.Builder) this.previousObject;
             typeB.fields().add(fieldB);
         }
 

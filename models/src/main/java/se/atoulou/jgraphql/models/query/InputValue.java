@@ -1,12 +1,10 @@
-package se.atoulou.jgraphql.models.schema;
-
-import se.atoulou.jgraphql.models.query.TypeDefinition;
+package se.atoulou.jgraphql.models.query;
 
 public class InputValue {
-    private final String name;
-    private final String description;
-    private final TypeDefinition   type;
-    private final String defaultValue;
+    private final String         name;
+    private final String         description;
+    private final TypeDefinition type;
+    private final String         defaultValue;
 
     public static Builder builder() {
         return new Builder();
@@ -37,10 +35,10 @@ public class InputValue {
     }
 
     public static class Builder {
-        private String       name;
-        private String       description;
+        private String                 name;
+        private String                 description;
         private TypeDefinition.Builder type;
-        private String       defaultValue;
+        private String                 defaultValue;
 
         protected Builder() {
         }

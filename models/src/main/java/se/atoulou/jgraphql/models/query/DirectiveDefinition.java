@@ -1,10 +1,12 @@
-package se.atoulou.jgraphql.models.schema;
+package se.atoulou.jgraphql.models.query;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Directive {
+import se.atoulou.jgraphql.models.query.InputValue.Builder;
+
+public class DirectiveDefinition {
     private final String           name;
     private final String           description;
     private final List<InputValue> arguments;
@@ -16,7 +18,7 @@ public class Directive {
         return new Builder();
     }
 
-    protected Directive(String name, String description, List<InputValue> arguments, Boolean onOperation, Boolean onFragment, Boolean onField) {
+    protected DirectiveDefinition(String name, String description, List<InputValue> arguments, Boolean onOperation, Boolean onFragment, Boolean onField) {
         this.name = name;
         this.description = description;
         this.arguments = arguments;
@@ -61,9 +63,9 @@ public class Directive {
             arguments = new ArrayList<>();
         }
 
-        public Directive build() {
+        public DirectiveDefinition build() {
             List<InputValue> arguments = this.arguments.stream().map(builder -> builder.build()).collect(Collectors.toList());
-            return new Directive(name, description, arguments, onOperation, onFragment, onField);
+            return new DirectiveDefinition(name, description, arguments, onOperation, onFragment, onField);
         }
 
         public String name() {

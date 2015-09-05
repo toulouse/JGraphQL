@@ -1,12 +1,12 @@
-package se.atoulou.jgraphql.models.schema;
+package se.atoulou.jgraphql.models.query;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.models.query.TypeDefinition;
+import se.atoulou.jgraphql.models.query.InputValue.Builder;
 
-public class Field {
+public class FieldDefinition {
     private final String           name;
     private final String           description;
     private final List<InputValue> arguments;
@@ -18,8 +18,7 @@ public class Field {
         return new Builder();
     }
 
-    protected Field(String name, String description, List<InputValue> argumentss, String type, Boolean isDeprecated, String deprecationReason) {
-        super();
+    protected FieldDefinition(String name, String description, List<InputValue> argumentss, String type, Boolean isDeprecated, String deprecationReason) {
         this.name = name;
         this.description = description;
         this.arguments = argumentss;
@@ -64,9 +63,9 @@ public class Field {
             arguments = new ArrayList<>();
         }
 
-        public Field build() {
+        public FieldDefinition build() {
             List<InputValue> arguments = this.arguments.stream().map(builder -> builder.build()).collect(Collectors.toList());
-            return new Field(name, description, arguments, type.name(), isDeprecated, deprecationReason);
+            return new FieldDefinition(name, description, arguments, type.name(), isDeprecated, deprecationReason);
         }
 
         public String name() {

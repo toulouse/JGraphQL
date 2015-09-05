@@ -4,22 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import se.atoulou.jgraphql.models.schema.Directive;
-
 public class Document {
     private final List<OperationDefinition> operations;
     private final List<FragmentDefinition>  fragments;
     private final List<TypeDefinition>      types;
     private final TypeDefinition            queryType;
     private final TypeDefinition            mutationType;
-    private final List<Directive>           directives;
+    private final List<DirectiveDefinition> directives;
 
     public static Builder builder() {
         return new Builder();
     }
 
     protected Document(List<OperationDefinition> operations, List<FragmentDefinition> fragments, List<TypeDefinition> types, TypeDefinition queryType,
-            TypeDefinition mutationType, List<Directive> directives) {
+            TypeDefinition mutationType, List<DirectiveDefinition> directives) {
         this.operations = operations;
         this.fragments = fragments;
         this.types = types;
@@ -48,7 +46,7 @@ public class Document {
         return mutationType;
     }
 
-    public List<Directive> getDirectives() {
+    public List<DirectiveDefinition> getDirectives() {
         return directives;
     }
 
@@ -58,7 +56,7 @@ public class Document {
         private List<TypeDefinition.Builder>      types;
         private TypeDefinition.Builder            queryType;
         private TypeDefinition.Builder            mutationType;
-        private List<Directive.Builder>           directives;
+        private List<DirectiveDefinition.Builder> directives;
 
         protected Builder() {
             operations = new ArrayList<>();
@@ -71,7 +69,7 @@ public class Document {
             List<TypeDefinition> types = this.types.stream().map(builder -> builder.build()).collect(Collectors.toList());
             TypeDefinition queryType = this.queryType.build();
             TypeDefinition mutationType = this.mutationType.build();
-            List<Directive> directives = this.directives.stream().map(builder -> builder.build()).collect(Collectors.toList());
+            List<DirectiveDefinition> directives = this.directives.stream().map(builder -> builder.build()).collect(Collectors.toList());
             return new Document(operations, fragments, types, queryType, mutationType, directives);
         }
 
@@ -120,11 +118,11 @@ public class Document {
             return this;
         }
 
-        public List<Directive.Builder> directives() {
+        public List<DirectiveDefinition.Builder> directives() {
             return directives;
         }
 
-        public Builder directives(List<Directive.Builder> directives) {
+        public Builder directives(List<DirectiveDefinition.Builder> directives) {
             this.directives = directives;
             return this;
         }

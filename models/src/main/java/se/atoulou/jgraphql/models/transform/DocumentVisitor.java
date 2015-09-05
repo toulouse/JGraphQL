@@ -5,7 +5,10 @@ import java.util.List;
 import se.atoulou.jgraphql.models.query.Argument;
 import se.atoulou.jgraphql.models.query.Directive;
 import se.atoulou.jgraphql.models.query.Document;
+import se.atoulou.jgraphql.models.query.EnumValue;
+import se.atoulou.jgraphql.models.query.FieldDefinition;
 import se.atoulou.jgraphql.models.query.FragmentDefinition;
+import se.atoulou.jgraphql.models.query.InputValue;
 import se.atoulou.jgraphql.models.query.OperationDefinition;
 import se.atoulou.jgraphql.models.query.Selection;
 import se.atoulou.jgraphql.models.query.Selection.FragmentSpread;
@@ -21,9 +24,6 @@ import se.atoulou.jgraphql.models.query.TypeDefinition.ObjectType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.ScalarType;
 import se.atoulou.jgraphql.models.query.TypeDefinition.UnionType;
 import se.atoulou.jgraphql.models.query.VariableDefinition;
-import se.atoulou.jgraphql.models.schema.EnumValue;
-import se.atoulou.jgraphql.models.schema.Field;
-import se.atoulou.jgraphql.models.schema.InputValue;
 
 public interface DocumentVisitor<T extends VisitorContext<T>> {
     void visitDocument(Document document, T context);
@@ -78,7 +78,7 @@ public interface DocumentVisitor<T extends VisitorContext<T>> {
 
     void visitInputValue(InputValue inputValue, T context);
 
-    void visitFields(List<Field> fields, T context);
+    void visitFields(List<FieldDefinition> fields, T context);
 
-    void visitField(Field field, T context);
+    void visitField(FieldDefinition field, T context);
 }
